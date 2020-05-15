@@ -1,5 +1,4 @@
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
-import InitiateTransaction
 meta = MetaData()
 
 #create engine for SQLAlchemy ORM
@@ -106,5 +105,3 @@ for row in result:
 #     print (row)
 
 #TransactionArray = ["Hello world.", "Dog"]
-
-InitiateTransaction.main("Chase", "Test", 4, items)
