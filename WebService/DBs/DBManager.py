@@ -53,7 +53,7 @@ mules = Table(
 
 transactions = Table(
     'transactions', meta,
-    Column('id', Integer, prmiary_key = True),
+    Column('id', Integer, primary_key = True),
     Column('UserID', Integer),
     Column('MuleID', Integer),
     Column('MMID', Integer),
@@ -71,10 +71,26 @@ users = Table(
     Column('Password', String),
     Column('Email', String),
     Column('RegistrationDate', Integer),
+    Column('StorageCapacity', Integer),
+    Column('StorageUsed', Integer),
 )
 
+offers = Table(
+    'offers', meta,
+    Column('id', Integer, primary_key = True),
+    Column('Owner', Integer),
+    Column('Seeking', Integer),
+    Column('SeekingQuantity', Integer),
+    Column('Providing', Integer),
+    Column('ProvidingQuantity', Integer),
+    Column('Created', Integer),
+    Column('Expiring', Integer),
+    Column('Fulfilled', Integer),
+    Column('FulfilledBy', Integer),
+    Column('FulfilledWhen', Integer),
+)
 #Table has been created. Will leave code above for reference. Note sure what the correct standards are for handling database itililization code.
-#meta.create_all(engine)
+# meta.create_all(engine)
 
 # This block of code will insert these items into the database in dictionary form.
 #
