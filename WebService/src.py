@@ -9,4 +9,4 @@ def listThem():
     return listItems.main(DBManager.items)
 
 def createAcc(ign, email, password):
-    createAccount.main(ign, email, pwSalting.hash_password(password), DBManager.users)
+    return createAccount.main(ign, email, pwSalting.hash_password(password), DBManager.users)

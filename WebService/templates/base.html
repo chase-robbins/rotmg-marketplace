@@ -31,10 +31,13 @@
          <h5 class="my-0 mr-md-auto font-weight-medium"><a href="/"><img src="{{ url_for('static', filename='img/wiz2.png') }}" /></a> Realm Exchange</h5>
          {% if session["email"]|length > 0 %}
          <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 text-dark" href="/user">Inventory</a>
+         </nav>
+         <nav class="my-2 my-md-0 mr-md-3">
             <a class="p-2 text-dark" href="/logout">Log Out</a>
          </nav>
          {% else %}
-            <a class="p-2 text-dark" href="/login">Log In</a>
+            <a class="p-2 text-dark" href="/login" style="margin-right:10px;">Log In</a>
             <a class="btn btn-outline-primary" href="/register">Register</a>
          {% endif %}
       </div>

@@ -3,6 +3,15 @@
 {% block content %}
 <link href="{{ url_for('static', filename='css/signin.css') }}" rel="stylesheet">
 <div class="container text-center">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert alert-warning" role="alert">
+          {{msg}}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
   <form class="form-signin" action="#" method="post">
     <img class="mb-4" src="{{ url_for('static', filename='img/wiz.png') }}" alt="" width="72" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Register</h1>

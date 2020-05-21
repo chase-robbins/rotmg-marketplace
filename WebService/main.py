@@ -29,15 +29,16 @@ def login():
 @app.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == "POST":
-        session.permanent = True
         email = request.form["email"]
         password = request.form["password"]
         ign = request.form["ign"]
-        session["email"] = email
-        session["password"] = password
-        session["ign"] = ign
-        src.createAcc(ign, email, password)
-        return redirect(url_for("home"))
+        if src.createAcc(ign, email, password):
+            session["email"] = email
+            session["password"] = password
+            session["ign"] = ign
+            return redirect(url_for("home"))
+        else:
+            return redirect(url_for("register"))
     else:
         if "user" in session:
             return redirect(url_for("user"))
@@ -45,9 +46,7 @@ def register():
 
 @app.route("/user", methods=["POST", "GET"])
 def user():
-    email = None
-    if "user" in session:
-        user = session["user"]
+    if "email" in session:
         return render_template("user.html")
     else:
         return redirect(url_for("login"))
