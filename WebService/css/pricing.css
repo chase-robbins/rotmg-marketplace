@@ -29,6 +29,9 @@ html {
   background-color:blue;
   height:10px;
 }
+.searchbar-input{
+  width: auto !important;
+}
 .searchbar{
-  width: 70% !important;
+  margin-bottom: 10px;
 }
