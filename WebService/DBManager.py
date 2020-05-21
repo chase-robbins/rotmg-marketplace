@@ -61,7 +61,7 @@ transactions = Table(
     Column('UserGave', Integer),
     #This will be the ROTMG ID of the item
     Column('UserRecieved', Integer),
-    Column('DateTime', Integer),
+    Column('DateTime', String),
 )
 
 users = Table(
@@ -70,7 +70,7 @@ users = Table(
     Column('IGN', String),
     Column('Password', String),
     Column('Email', String),
-    Column('RegistrationDate', Integer),
+    Column('RegistrationDate', String),
     Column('StorageCapacity', Integer),
     Column('StorageUsed', Integer),
 )
@@ -83,14 +83,14 @@ offers = Table(
     Column('SeekingQuantity', Integer),
     Column('Providing', Integer),
     Column('ProvidingQuantity', Integer),
-    Column('Created', Integer),
-    Column('Expiring', Integer),
+    Column('Created', String),
+    Column('Expiring', String),
     Column('Fulfilled', Integer),
     Column('FulfilledBy', Integer),
-    Column('FulfilledWhen', Integer),
+    Column('FulfilledWhen', String),
 )
 #Table has been created. Will leave code above for reference. Note sure what the correct standards are for handling database itililization code.
-# meta.create_all(engine)
+meta.create_all(engine)
 
 # This block of code will insert these items into the database in dictionary form.
 #
