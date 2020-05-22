@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, render_template, request, session, f
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
 import src
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 app = Flask(__name__)
 app.secret_key = "978u3h4tg897hgbu4rh49p83gf7hq9p34hgq93p4u"
@@ -11,8 +12,8 @@ db = SQLAlchemy(app)
 
 @app.route("/")
 def home():
-    itemsReturn = src.listThem()
-    return render_template("home.html", items = itemsReturn)
+    offersReturn = src.listTheOffers()
+    return render_template("home.html", offers = offersReturn, Source = src)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -77,6 +78,21 @@ def deposit():
     else:
         return render_template("deposit.html")
 
+@app.route("/offer", methods=["POST", "GET"])
+def offer():
+    if request.method == "POST":
+        seeking = request.form["seeking"]
+        seekingq = request.form["seekingq"]
+        providing = request.form["providing"]
+        providingq = request.form["providingq"]
+        src.createTestOffer(seeking,seekingq,providing,providingq, session["UID"])
+        flash("Offer Posted.")
+        return render_template("offer.html")
+    else:
+        return render_template("offer.html")
+
+#CUSTOM FILTERS:
+app.jinja_env.filters['getIGN'] = src.getIGN
 
 if __name__ == "__main__":
     app.run(debug = True)

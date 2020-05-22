@@ -6,15 +6,15 @@ engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres
 conn = engine.connect()
 
 #Method to list all items in item Table in DB
-def listItems(items):
+def listOffers(offers):
     #searches for item matching itemID inside items table
-    s = items.select()
+    s = offers.select()
     result = conn.execute(s)
     return result
 
 #Pass in arguments in order: Recipient User ID, Recipient to Provide, Item (ID) to Give
-def main(items):
-    return listItems(items)
+def main(offers):
+    return listOffers(offers)
 
     #Final insertion into transactions ledger
     #insertion = transactions.insert().values(UserID = recepient, MuleID = mule )
