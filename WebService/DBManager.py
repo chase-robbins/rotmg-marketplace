@@ -73,6 +73,7 @@ users = Table(
     Column('RegistrationDate', String),
     Column('StorageCapacity', Integer),
     Column('StorageUsed', Integer),
+    Column('Verified', Integer),
 )
 
 offers = Table(

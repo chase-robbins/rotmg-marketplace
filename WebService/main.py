@@ -17,12 +17,16 @@ def home():
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
-        session.permanent = True
-        user = request.form["email"]
-        session["user"] = user
-        return redirect(url_for("user"))
+        email = request.form["email"]
+        password = request.form["password"]
+        if src.tryLogin(email, password):
+            session["UID"] = src.getUID(email)
+            session.permanent = True
+            return redirect(url_for("user"))
+        else:
+            return redirect(url_for("login"))
     else:
-        if "user" in session:
+        if "UID" in session:
             return redirect(url_for("user"))
         return render_template("login.html")
 
@@ -32,10 +36,8 @@ def register():
         email = request.form["email"]
         password = request.form["password"]
         ign = request.form["ign"]
-        if src.createAcc(ign, email, password):
-            session["email"] = email
-            session["password"] = password
-            session["ign"] = ign
+        if src.createAcc(ign, email, password) == 1:
+            session["UID"] = src.getUID(email)
             return redirect(url_for("home"))
         else:
             return redirect(url_for("register"))
@@ -46,16 +48,35 @@ def register():
 
 @app.route("/user", methods=["POST", "GET"])
 def user():
-    if "email" in session:
-        return render_template("user.html")
+    if request.method == "POST":
+        str = request.form["search"]
+        list = src.invSearch(str, session["UID"])
+        return render_template("user.html", items = list)
     else:
-        return redirect(url_for("login"))
+        if "UID" in session:
+            ign = src.getIGN(session["UID"])
+            list = src.listItemsFromUID(session["UID"])
+            return render_template("user.html", items = list, ign = ign)
+        else:
+            return redirect(url_for("login"))
 
 @app.route("/logout")
 def logout():
     session.clear()
     flash("You have successfully logged out.", "info")
     return redirect(url_for("login"))
+
+@app.route("/deposit", methods=["POST", "GET"])
+def deposit():
+    if request.method == "POST":
+        itemid = request.form["id"]
+        name = request.form["name"]
+        src.testDeposit(itemid, name, session["UID"])
+        flash("Deposit successful.")
+        return render_template("deposit.html")
+    else:
+        return render_template("deposit.html")
+
 
 if __name__ == "__main__":
     app.run(debug = True)
