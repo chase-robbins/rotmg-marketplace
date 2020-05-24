@@ -1,0 +1,6 @@
+sqlalchemy
+requests
+pytz
+pynput
+flask
+flask_sqlalchemy

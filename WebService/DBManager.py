@@ -9,7 +9,7 @@ items = Table(
     Column('id', Integer, primary_key = True),
     Column('name', String),
     Column('MuleID', Integer),
-    Column('GameID', Integer),
+    Column('GameID', String),
     Column('Owner', Integer),
 )
 
@@ -33,22 +33,22 @@ mules = Table(
     Column('bdayMonth', Integer),
     Column('bdayDay', Integer),
     Column('bdayYear', Integer),
-    Column('slot1', Integer),
-    Column('slot2', Integer),
-    Column('slot3', Integer),
-    Column('slot4', Integer),
-    Column('slot5', Integer),
-    Column('slot6', Integer),
-    Column('slot7', Integer),
-    Column('slot8', Integer),
-    Column('slot9', Integer),
-    Column('slot10', Integer),
-    Column('slot11', Integer),
-    Column('slot12', Integer),
-    Column('slot13', Integer),
-    Column('slot14', Integer),
-    Column('slot15', Integer),
-    Column('slot16', Integer),
+    Column('slot1', String),
+    Column('slot2', String),
+    Column('slot3', String),
+    Column('slot4', String),
+    Column('slot5', String),
+    Column('slot6', String),
+    Column('slot7', String),
+    Column('slot8', String),
+    Column('slot9', String),
+    Column('slot10', String),
+    Column('slot11', String),
+    Column('slot12', String),
+    Column('slot13', String),
+    Column('slot14', String),
+    Column('slot15', String),
+    Column('slot16', String),
 )
 
 transactions = Table(
@@ -57,10 +57,10 @@ transactions = Table(
     Column('UserID', Integer),
     Column('MuleID', Integer),
     Column('MMID', Integer),
-    #This will be our ID of the item the user gave
-    Column('UserGave', Integer),
+    #This will be the RotMG ID of the item the user gave
+    Column('UserGave', String),
     #This will be the ROTMG ID of the item
-    Column('UserRecieved', Integer),
+    Column('UserRecieved', String),
     Column('DateTime', String),
 )
 
@@ -80,15 +80,21 @@ offers = Table(
     'offers', meta,
     Column('id', Integer, primary_key = True),
     Column('Owner', Integer),
-    Column('Seeking', Integer),
+    Column('Seeking', String),
     Column('SeekingQuantity', Integer),
-    Column('Providing', Integer),
+    Column('Providing', String),
     Column('ProvidingQuantity', Integer),
     Column('Created', String),
     Column('Expiring', String),
     Column('Fulfilled', Integer),
     Column('FulfilledBy', Integer),
     Column('FulfilledWhen', String),
+)
+
+itemIds = Table(
+    'itemIds', meta,
+    Column('id', String),
+    Column('Name', String)
 )
 #Table has been created. Will leave code above for reference. Note sure what the correct standards are for handling database itililization code.
 meta.create_all(engine)

@@ -48,8 +48,8 @@ def tryLogin(email, password):
         return False
 
 #Function to test Deposits
-def testDeposit(itemID, name, UID):
-    s = DBManager.items.insert().values(Owner = UID, name = name, GameID = itemID)
+def testDeposit(itemID, UID):
+    s = DBManager.items.insert().values(Owner = UID, GameID = itemID)
     result = conn.execute(s)
 
 #list the items of a player given their UID
@@ -77,6 +77,16 @@ def invSearch(str, UID):
     print(newList)
     return newList
 
+def getItemName(id):
+    s = DBManager.itemIds.select().where(DBManager.itemIds.c.id == id)
+    result = conn.execute(s)
+    row = result.fetchone()
+    if row is None:
+        return ""
+    else:
+        row = result.fetchone()
+        print(row['Name'])
+        return row
 #create test offer
 def createTestOffer(seeking, seekingq, providing, providingq, uid):
     s = DBManager.offers.insert().values(Owner = uid, Seeking = seeking, SeekingQuantity = seekingq, Providing = providing, ProvidingQuantity = providingq, Created = datetime.now())

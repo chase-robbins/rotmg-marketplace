@@ -71,8 +71,7 @@ def logout():
 def deposit():
     if request.method == "POST":
         itemid = request.form["id"]
-        name = request.form["name"]
-        src.testDeposit(itemid, name, session["UID"])
+        src.testDeposit(itemid, session["UID"])
         flash("Deposit successful.")
         return render_template("deposit.html")
     else:
@@ -91,8 +90,13 @@ def offer():
     else:
         return render_template("offer.html")
 
+
+
+
 #CUSTOM FILTERS:
 app.jinja_env.filters['getIGN'] = src.getIGN
+app.jinja_env.filters['getItemName'] = src.getItemName
+
 
 if __name__ == "__main__":
     app.run(debug = True)
