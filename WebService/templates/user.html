@@ -37,17 +37,27 @@
       <div class="row" style="margin-right:15px;margin-left:0;">
         <ul class="list-group" style="width:100%;">
           {% for item in items %}
-            <li class="list-group-item">{{ item[0]|getItemName }}</li>
+            <li class="list-group-item"><img src="{{ url_for('static', filename='items/' + item[3] + '.png') }}"> {{ item[3]|getItemName }}</li>
           {% endfor %}
         </ul>
       </div>
     </div>
+
     <div class="col col-lg-4">
-      <h4>New Offer</h4>
-      <!-- code for creating new offer -->
+      <a href="/offer" target="_blank"><button type="button" class="btn btn-secondary">Create Offer</button></a>
+      <button type="button" class="btn btn-info">Make Profile Public</button>
+      <hr>
+      <h4>Active Offers</h4>
+      <h6>Offer Capacity: 1/10</h6>
+      {% if activeOffers is none %}
+        <p>None</p>
+      {% else %}
+        {% for offer in activeOffers %}
+        <li class="list-group-item">{{ offer[5]|str }}x<img src="{{ url_for('static', filename='items/' + offer[4]|str + '.png') }}"> for {{ offer[3] }}x<img src="{{ url_for('static', filename='items/' + offer[2]|str + '.png') }}"></li>
+        {% endfor %}
+      {% endif %}
       <hr>
       <h4>Trade History</h4>
-      <h6>Offer Capacity: 1/10</h6>
       <ul class="list-group">
         <li class="list-group-item">1x<img src="https://static.drips.pw/rotmg/wiki/Weapons/Staves/T11%20Staff%20of%20Yuletide%20Carols.png" /> for 3x<img src="https://i.imgur.com/scbKnF0.png" /> </li>
       </ul>

@@ -49,6 +49,8 @@ def register():
 
 @app.route("/user", methods=["POST", "GET"])
 def user():
+    activeOffers = src.getActiveOffers(session["UID"]).fetchall()
+    print(activeOffers)
     if request.method == "POST":
         str = request.form["search"]
         list = src.invSearch(str, session["UID"])
@@ -57,7 +59,7 @@ def user():
         if "UID" in session:
             ign = src.getIGN(session["UID"])
             list = src.listItemsFromUID(session["UID"])
-            return render_template("user.html", items = list, ign = ign)
+            return render_template("user.html", items = list, ign = ign, activeOffers = activeOffers)
         else:
             return redirect(url_for("login"))
 
@@ -80,22 +82,29 @@ def deposit():
 @app.route("/offer", methods=["POST", "GET"])
 def offer():
     if request.method == "POST":
-        seeking = request.form["seeking"]
-        seekingq = request.form["seekingq"]
-        providing = request.form["providing"]
-        providingq = request.form["providingq"]
         src.createTestOffer(seeking,seekingq,providing,providingq, session["UID"])
         flash("Offer Posted.")
         return render_template("offer.html")
     else:
-        return render_template("offer.html")
+        if "UID" in session:
+            list = src.listItemsFromUID(session["UID"])
+            itemIds = src.getAllItems()
+            return render_template("offer.html", items = list, itemIds = itemIds)
+        else:
+            return render_template("offer.html")
 
 
+
+@app.route("/withdraw", methods=['POST'])
+def withdraw(itemID):
+        src.withdraw(itemID, session["UID"])
 
 
 #CUSTOM FILTERS:
 app.jinja_env.filters['getIGN'] = src.getIGN
 app.jinja_env.filters['getItemName'] = src.getItemName
+app.jinja_env.filters['getItemImage'] = src.getItemImage
+app.jinja_env.filters['str'] = str
 
 
 if __name__ == "__main__":

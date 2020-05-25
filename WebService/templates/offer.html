@@ -12,17 +12,26 @@
       {% endfor %}
     {% endif %}
   {% endwith %}
+
   <form class="form-signin" action="#" method="post">
     <img class="mb-4" src="{{ url_for('static', filename='img/wiz.png') }}" alt="" width="72" height="72">
-    <input type="text" id="inputEmail" class="form-control" placeholder="seeking" required autofocus name="seeking">
-    <label class="sr-only">seeking</label>
-    <input type="text" id="inputEmail" class="form-control" placeholder="seekingq" required autofocus name="seekingq">
-    <label class="sr-only">seekingq</label>
-    <input type="text" id="inputEmail" class="form-control" placeholder="providing" required autofocus name="providing">
-    <label class="sr-only">providing</label>
-    <input type="text" id="inputEmail" class="form-control" placeholder="providingq" required autofocus name="providingq">
-    <label class="sr-only">providingq</label>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Deposit</button>
+    <h4> New offer to sell... </h4>
+    <input type="text" autofocus list="inventoryitems" class="form-control" required placeholder="Item" name="supplying"/>
+    <datalist id="inventoryitems">
+      {% for item in items %}
+        <option>{{ item[3]|getItemName }}</option>
+      {% endfor %}
+    </datalist>
+    <input type="number" class="form-control" placeholder="Quantity" required name="supplyingq">
+    <br><h4> In exchange for... </h4>
+    <input type="text" list="allItems" class="form-control" required placeholder="Item" name="recieving"/>
+    <datalist id="allItems">
+      {% for item in itemIds %}
+        <option>{{ item[0]|getItemName }}</option>
+      {% endfor %}
+    </datalist>
+    <input type="number" class="form-control" placeholder="Quantity" required name="recievingq">
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Post Offer</button>
     <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
   </form>
 </div>

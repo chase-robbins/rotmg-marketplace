@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, and_
 import DBManager
 import InitiateTransaction
 import listOffers
@@ -37,11 +37,9 @@ def tryLogin(email, password):
     while row:
         pw = row[2]
         if pwSalting.verify_password(pw, password):
-            print("Verification Successful")
             return True
         else:
             flash("Password Incorrect")
-            print("Verification NOT Successful")
             return False
     else:
         flash("Account not found. Was there a typo in your email?")
@@ -70,23 +68,38 @@ def invSearch(str, UID):
     result = conn.execute(s)
     newList = []
     for item in result:
-        print("Item: " + item[1])
         if str in item[1]:
-            print("Item contains target string.")
             newList.append(item)
-    print(newList)
     return newList
 
 def getItemName(id):
-    s = DBManager.itemIds.select().where(DBManager.itemIds.c.id == id)
+    s = DBManager.itemIds.select().where(DBManager.itemIds.c.id == str(id))
     result = conn.execute(s)
     row = result.fetchone()
     if row is None:
         return ""
     else:
-        row = result.fetchone()
-        print(row['Name'])
-        return row
+        return row[1]
+
+def getItemImage(id):
+    return "\"{{ url_for('static', filename='items/" + id + ".png') }}\""
+
+def getActiveOffers(id):
+    # s = DBManager.offers.select().where(and_(DBManager.offers.c.Owner == id, DBManager.offers.c.Fulfilled != 1))
+    s = DBManager.offers.select().where(DBManager.offers.c.Owner == id)
+    result = conn.execute(s)
+    return result
+
+def withdraw(itemid, userid):
+        s = DBManager.items.select().where(DBManager.items.c.Owner == str(userid))
+        result = conn.execute(s)
+        print(result.fetchall())
+
+def getAllItems():
+        s = DBManager.itemIds.select()
+        result = conn.execute(s)
+        return result.fetchall()
+
 #create test offer
 def createTestOffer(seeking, seekingq, providing, providingq, uid):
     s = DBManager.offers.insert().values(Owner = uid, Seeking = seeking, SeekingQuantity = seekingq, Providing = providing, ProvidingQuantity = providingq, Created = datetime.now())

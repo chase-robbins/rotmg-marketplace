@@ -11,17 +11,7 @@ items = Table(
     Column('MuleID', Integer),
     Column('GameID', String),
     Column('Owner', Integer),
-)
-
-middleMen = Table(
-    'middleMen', meta,
-    Column('id', Integer, primary_key = True),
-    Column('IGN', String),
-    Column('Email', String),
-    Column('Password', String),
-    Column('bdayMonth', Integer),
-    Column('bdayDay', Integer),
-    Column('bdayYear', Integer),
+    Column('InOffer', Integer, default=0)
 )
 
 mules = Table(
@@ -33,6 +23,7 @@ mules = Table(
     Column('bdayMonth', Integer),
     Column('bdayDay', Integer),
     Column('bdayYear', Integer),
+    Column('type', Integer),
     Column('slot1', String),
     Column('slot2', String),
     Column('slot3', String),
@@ -96,19 +87,36 @@ itemIds = Table(
     Column('id', String),
     Column('Name', String)
 )
+
+withdraws = Table(
+    'withdraws', meta,
+    Column('id', Integer, primary_key = True),
+    Column('muleID', Integer),
+    Column('mmID', Integer),
+    Column('recipient', String),
+    Column('server', String),
+    Column('status', String),
+    Column('completed', Integer),
+    Column('dateTimeInitialized', String),
+    Column('expired', Integer),
+)
+
+deposits = Table(
+    'deposits', meta,
+    Column('id', Integer, primary_key = True),
+    Column('muleID', Integer),
+    Column('mmID', Integer),
+    Column('IGN', String),
+    Column('server', String),
+    Column('status', String),
+    Column('completed', Integer),
+    Column('dateTimeInitialized', String),
+    Column('expired', Integer),
+    Column('deposited', String), #Just import comma seperated string of ids
+)
 #Table has been created. Will leave code above for reference. Note sure what the correct standards are for handling database itililization code.
 meta.create_all(engine)
 
-# This block of code will insert these items into the database in dictionary form.
-#
-# conn = engine.connect()
-# result = conn.execute(items.insert(), [
-#     {'name' : 'Potion of Life', 'MuleID' : 123, 'GameID' : 1234, 'Owner' : 214},
-#     {'name' : 'Potion of Defence', 'MuleID' : 123, 'GameID' : 1234, 'Owner' : 214},
-#     {'name' : 'Potion of Dexterity', 'MuleID' : 123, 'GameID' : 1234, 'Owner' : 214},
-#     {'name' : 'Potion of Wisdom', 'MuleID' : 123, 'GameID' : 1234, 'Owner' : 214},
-#     {'name' : 'Potion of Life', 'MuleID' : 123, 'GameID' : 1234, 'Owner' : 214},
-#     ])
 
 conn = engine.connect()
 s = items.select()

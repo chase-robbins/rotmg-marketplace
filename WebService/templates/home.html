@@ -22,7 +22,7 @@
       <ul class="list-group">
         <li class="list-group-item">1x <img src="https://static.drips.pw/rotmg/wiki/Weapons/Staves/T11%20Staff%20of%20Yuletide%20Carols.png" /> Staff of Yuletide Carols for 3x <img src="https://i.imgur.com/scbKnF0.png" /> Coral Juice</li>
         {% for offer in offers %}
-          <li class="list-group-item">{{ offer[1]|getIGN() }} is seeking {{offer[3]}}x{{ offer[2] }} in exchange for {{ offer[5] }}x{{ offer[4] }}</li>
+          <li class="list-group-item">{{offer[3]}}x<img src="{{ url_for('static', filename='items/' + offer[2]|str + '.png') }}" /> for {{ offer[5] }}x<img src="{{ url_for('static', filename='items/' + offer[4]|str + '.png') }}" /></li>
         {% endfor %}
       </ul>
     </div>
