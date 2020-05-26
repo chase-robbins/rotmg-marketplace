@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import ARRAY
 
@@ -9,13 +9,16 @@ meta = MetaData()
 #create engine for SQLAlchemy ORM
 engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
 
+session = Session(bind=engine)
+
 items = Table(
     'items', meta,
     Column('id', Integer, primary_key = True),
     Column('muleID', Integer),
     Column('gameId', String),
     Column('owner', Integer),
-    Column('inOffer', Integer, default=0)
+    Column('inOffer', Integer, default=0),
+    Column('slot', Integer)
 )
 
 mules = Table(

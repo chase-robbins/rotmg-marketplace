@@ -13,7 +13,7 @@
     {% endif %}
   {% endwith %}
 
-  <form class="form-signin" onsubmit="return submit_form();">
+  <form id='form' class="form-signin" onsubmit="return submit_form();">
     <img class="mb-4" src="{{ url_for('static', filename='img/wiz.png') }}" alt="" width="72" height="72">
     <h4> New offer to sell... </h4>
     <select class="selectpicker" id='selling' multiple data-live-search="true">
@@ -28,8 +28,8 @@
         <option>{{ item[3]|getItemName }}</option>
       {% endfor %}
     </datalist>
-    <input type="number" class="form-control" placeholder="Quantity" required name="supplyingq" />
-    <br><h4> In exchange for... </h4>
+    <div id='selling-quantity'></div>
+    <br /><h4> In exchange for... </h4>
 
     <select class="selectpicker" id='buying' multiple data-live-search="true">
 
@@ -38,19 +38,30 @@
       {% endfor %}
 
     </select>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Post Offer</button>
+    <div id='buying-quantity'></div>
+    <button id='submit' class="btn btn-lg btn-primary btn-block" type="submit">Post Offer</button>
     <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
   </form>
 </div>
 <script type="text/javascript">
   const selectElement1 = document.querySelector('#buying');
-  selectElement.addEventListener('change', (event) => {
-    console.log(${event.target.value});
-  });
   const toSend = {
-    name : "chase",
-    dick: "small"
+    name : "test",
   }
+  function slugify(string) {
+  const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
+  const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'
+  const p = new RegExp(a.split('').join('|'), 'g')
+
+  return string.toString().toLowerCase()
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+    .replace(/&/g, '-and-') // Replace & with 'and'
+    .replace(/[^\w\-]+/g, '') // Remove all non-word characters
+    .replace(/\-\-+/g, '-') // Replace multiple - with single -
+    .replace(/^-+/, '') // Trim - from start of text
+    .replace(/-+$/, '') // Trim - from end of text
+}
   const jsonString = JSON.stringify(toSend);
 
   const xhr = new XMLHttpRequest();
@@ -58,5 +69,47 @@
   xhr.open("POST", "postoffer");
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.send(jsonString);
+  function createRemoveFields(t, selector){
+
+    var values = $(t).val() || [];
+    var quantity = $('#' + selector)
+    $('#' + selector + " .quantity").each(function() {
+
+      var val = $(this).data('val');
+      if (!values || !values.includes(val)) {
+        $(this).remove()
+      }
+    })
+
+    values.forEach(item => {
+      var slug = slugify(item)
+      if ($("#quantity-" + slug).length == 0) {
+        quantity.append($('<input data-val="'+item+'" id="quantity-' + slug + '" type="number" class="form-control quantity" placeholder="Quantity '+ item + '" required name="'+selector + '-' + item+'" />'))
+      }
+    })
+
+  }
+
+  $(function () {
+    $('#selling').on('change', function() {
+      createRemoveFields(this, 'selling-quantity')
+    });
+    $('#buying').on('change', function() {
+      createRemoveFields(this, 'buying-quantity')
+    });
+    $("#submit").click(function(e){
+      e.preventDefault();
+      var vals = $("#form").serializeArray();
+      $.ajax({
+        'url': '/postoffer',
+        data: JSON.stringify(vals),
+        type: 'POST',
+        contentType: 'application/json',
+        success: function(response) {
+          console.log(response)
+        }
+      })
+    })
+  })
 </script>
 {% endblock %}

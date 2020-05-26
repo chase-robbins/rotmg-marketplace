@@ -55,17 +55,13 @@ def register():
 def user():
     activeOffers = src.getActiveOffers(session["UID"]).fetchall()
     print(activeOffers)
-    if request.method == "POST":
-        str = request.form["search"]
-        list = src.invSearch(str, session["UID"]).fetchall()
-        return render_template("user.html", items = list, invUsed = len(list), activeOffers = activeOffers)
+    if "UID" in session:
+        ign = src.getIGN(session["UID"])
+        list = src.getItemsForInventory(session["UID"])
+        invUsed = src.getInvUsed(session["UID"])
+        return render_template("user.html", items = list, ign = ign, activeOffers = activeOffers, invUsed = invUsed, capacity = src.getCapacity(session["UID"]))
     else:
-        if "UID" in session:
-            ign = src.getIGN(session["UID"])
-            list = src.listItemsFromUID(session["UID"]).fetchall()
-            return render_template("user.html", items = list, ign = ign, activeOffers = activeOffers, invUsed = len(list), capacity = src.getCapacity(session["UID"]))
-        else:
-            return redirect(url_for("login"))
+        return redirect(url_for("login"))
 
 @app.route("/logout")
 def logout():

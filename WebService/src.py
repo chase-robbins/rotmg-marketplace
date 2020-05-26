@@ -6,6 +6,7 @@ import createAccount
 import pwSalting
 from flask import flash
 from datetime import datetime
+from sqlalchemy import func
 
 #Connect to Database
 engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
@@ -72,6 +73,7 @@ def invSearch(str, UID):
             newList.append(item)
     return newList
 
+#get the name of an item from the GameID number
 def getItemName(id):
     print(id)
     s = DBManager.itemIds.select().where(DBManager.itemIds.c.id == str(id))
@@ -81,33 +83,50 @@ def getItemName(id):
         return ""
     else:
         return row[1]
-
+#returns the Jinja2 syntax to get the icon for an item
 def getItemImage(id):
     return "\"{{ url_for('static', filename='items/" + id + ".png') }}\""
 
+#returns an object containing the active offers from a given UID
 def getActiveOffers(id):
     # s = DBManager.offers.select().where(and_(DBManager.offers.c.owner == id, DBManager.offers.c.Fulfilled != 1))
     s = DBManager.offers.select().where(DBManager.offers.c.owner == id)
     result = conn.execute(s)
     return result
 
-def withdraw(itemid, userid):
-        s = DBManager.items.select().where(DBManager.items.c.owner == str(userid))
-        result = conn.execute(s)
-        print(result.fetchall())
-
+#returns an object containing all items stored in DB
 def getAllItems():
         s = DBManager.itemIds.select()
         result = conn.execute(s)
         return result.fetchall()
 
+#returns the item capacity given a UID
 def getCapacity(UID):
     s = DBManager.users.select().where(DBManager.users.c.id == UID)
     result = conn.execute(s).fetchone()
     return result[5]
 
+#list the items of a player given their UID
+def listItemsFromUID(UID):
+    s = DBManager.items.select().where(DBManager.items.c.owner == UID)
+    result = conn.execute(s)
+    return result
 
-#create test offer
-# def createTestOffer(seeking, seekingq, providing, providingq, uid):
-#     s = DBManager.offers.insert().values(owner = uid, seeking = seeking, SeekingQuantity = seekingq, Providing = providing, ProvidingQuantity = providingq, Created = datetime.now())
-#     result = conn.execute(s)
+
+# psuedocode: iterate through each item in inv and keep track of ids (if they're unique) as first parameter in dictionary.
+# then, iterate through each item again for quantity and add that as second parameter in dictionary.
+#
+# select name, count(*) from table WHERE user=123 group by name
+def getItemsForInventory(UID):
+    ## QUESTION: import pdb; pdb.set_trace()
+    var = DBManager.session.query(
+        DBManager.items.columns.gameId,
+        func.count(DBManager.items.columns.gameId)
+        ).group_by(DBManager.items.columns.gameId).filter(DBManager.items.c.owner == UID).all()
+    print(var)
+    return var
+
+def getInvUsed(UID):
+    s = DBManager.items.select().where(DBManager.items.c.owner == UID)
+    result = conn.execute(s)
+    return len(result.fetchall())
