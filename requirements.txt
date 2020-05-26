@@ -4,3 +4,4 @@ pytz
 pynput
 flask
 flask_sqlalchemy
+psycopg2
