@@ -98,10 +98,10 @@ def offer():
             return render_template("offer.html")
 
 
-@app.route("/postoffer", methods=['GET'])
+@app.route("/postoffer", methods=['POST'])
 def postOffer():
         data = request.get_json(force=True)
-        item = data.get('item')
+        print(data)
 
         return jsonify({
         'message': 'something...'

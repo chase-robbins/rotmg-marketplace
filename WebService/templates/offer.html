@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Log In{% endblock %}
+{% block title %}Create New Offer{% endblock %}
 {% block content %}
 <link href="{{ url_for('static', filename='css/signin.css') }}" rel="stylesheet">
 <div class="container text-center">
@@ -16,7 +16,13 @@
   <form class="form-signin" onsubmit="return submit_form();">
     <img class="mb-4" src="{{ url_for('static', filename='img/wiz.png') }}" alt="" width="72" height="72">
     <h4> New offer to sell... </h4>
-    <input type="text" autofocus list="inventoryitems" class="form-control" required placeholder="Item" name="supplying"/>
+    <select class="selectpicker" id='selling' multiple data-live-search="true">
+
+      {% for item in items %}
+        <option>{{ item[2]|getItemName }}</option>
+      {% endfor %}
+
+    </select>
     <datalist id="inventoryitems">
       {% for item in items %}
         <option>{{ item[3]|getItemName }}</option>
@@ -25,37 +31,32 @@
     <input type="number" class="form-control" placeholder="Quantity" required name="supplyingq" />
     <br><h4> In exchange for... </h4>
 
-    <select class="selectpicker" id='x' multiple data-live-search="true">
+    <select class="selectpicker" id='buying' multiple data-live-search="true">
 
       {% for item in itemIds %}
         <option>{{ item[0]|getItemName }}</option>
       {% endfor %}
 
     </select>
-    <div id='test'>
-
-    </div>
-    <input type="number" class="form-control" placeholder="Quantity" required name="recievingq">
     <button class="btn btn-lg btn-primary btn-block" type="submit">Post Offer</button>
     <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
   </form>
 </div>
 <script type="text/javascript">
-  $('select').selectpicker();
-  $('#x').change(function(){
-    let q = ''
-    v = $('#x').val()
-    console.log(v)
-    for (i of v ){
-      q += `<input placeholder="Quantity for ${i}" class="quantity" data-items="${i}" type="number"><br>`
-    }
-    document.getElementById('test').innerHTML =  q
-  })
-
-  function submit_form(){
-    quantity = $('.quantity')
-    console.log(qantity)
-    return false;
+  const selectElement1 = document.querySelector('#buying');
+  selectElement.addEventListener('change', (event) => {
+    console.log(${event.target.value});
+  });
+  const toSend = {
+    name : "chase",
+    dick: "small"
   }
+  const jsonString = JSON.stringify(toSend);
+
+  const xhr = new XMLHttpRequest();
+
+  xhr.open("POST", "postoffer");
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.send(jsonString);
 </script>
 {% endblock %}

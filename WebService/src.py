@@ -73,6 +73,7 @@ def invSearch(str, UID):
     return newList
 
 def getItemName(id):
+    print(id)
     s = DBManager.itemIds.select().where(DBManager.itemIds.c.id == str(id))
     result = conn.execute(s)
     row = result.fetchone()
