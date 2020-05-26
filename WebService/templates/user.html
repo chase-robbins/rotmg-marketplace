@@ -28,7 +28,7 @@
   </div>
   <div class="row">
     <div class="col">
-      <h4>Your Inventory</h4>
+      <h4>Your Inventory ({{ invUsed }}/{{ capacity }})</h4>
       <!-- SEARCH BAR -->
       <form class="form-inline searchbar" action="#" method="post">
         <input class="form-control mr-sm-2 searchbar-input" type="search" placeholder="Search" name="search" aria-label="Search">
@@ -37,7 +37,7 @@
       <div class="row" style="margin-right:15px;margin-left:0;">
         <ul class="list-group" style="width:100%;">
           {% for item in items %}
-            <li class="list-group-item"><img src="{{ url_for('static', filename='items/' + item[3] + '.png') }}"> {{ item[3]|getItemName }}</li>
+            <li class="list-group-item"><img src="{{ url_for('static', filename='items/' + item[2]|str + '.png') }}"> {{ item[2]|getItemName }}</li>
           {% endfor %}
         </ul>
       </div>

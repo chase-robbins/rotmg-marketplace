@@ -1,4 +1,9 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.dialects.postgresql import ARRAY
+
+Base = declarative_base()
 meta = MetaData()
 
 #create engine for SQLAlchemy ORM
@@ -7,91 +12,77 @@ engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres
 items = Table(
     'items', meta,
     Column('id', Integer, primary_key = True),
-    Column('name', String),
-    Column('MuleID', Integer),
-    Column('GameID', String),
-    Column('Owner', Integer),
-    Column('InOffer', Integer, default=0)
+    Column('muleID', Integer),
+    Column('gameId', String),
+    Column('owner', Integer),
+    Column('inOffer', Integer, default=0)
 )
 
 mules = Table(
     'mules', meta,
     Column('id', Integer, primary_key = True),
-    Column('IGN', String),
-    Column('Email', String),
-    Column('Password', String),
-    Column('bdayMonth', Integer),
+    Column('ign', String),
+    Column('email', String),
+    Column('password', String),
     Column('bdayDay', Integer),
+    Column('bdayMonth', Integer),
     Column('bdayYear', Integer),
+    Column('isBanned', Boolean),
     Column('type', Integer),
-    Column('slot1', String),
-    Column('slot2', String),
-    Column('slot3', String),
-    Column('slot4', String),
-    Column('slot5', String),
-    Column('slot6', String),
-    Column('slot7', String),
-    Column('slot8', String),
-    Column('slot9', String),
-    Column('slot10', String),
-    Column('slot11', String),
-    Column('slot12', String),
-    Column('slot13', String),
-    Column('slot14', String),
-    Column('slot15', String),
-    Column('slot16', String),
 )
 
 transactions = Table(
     'transactions', meta,
     Column('id', Integer, primary_key = True),
-    Column('UserID', Integer),
-    Column('MuleID', Integer),
-    Column('MMID', Integer),
-    #This will be the RotMG ID of the item the user gave
-    Column('UserGave', String),
-    #This will be the ROTMG ID of the item
-    Column('UserRecieved', String),
-    Column('DateTime', String),
+    Column('user1', Integer),
+    Column('user2', Integer),
+    Column('user1Gave', String),
+    Column('user2Gave', String),
 )
 
 users = Table(
     'users', meta,
     Column('id', Integer, primary_key = True),
-    Column('IGN', String),
-    Column('Password', String),
-    Column('Email', String),
-    Column('RegistrationDate', String),
-    Column('StorageCapacity', Integer),
-    Column('StorageUsed', Integer),
-    Column('Verified', Integer),
+    Column('ign', String),
+    Column('password', String),
+    Column('email', String),
+    Column('registrationDate', String),
+    Column('storageCapacity', Integer),
+    Column('storageUsed', Integer),
+    Column('verificationString', String),
+    Column('verified', Integer),
+    Column('tier', Integer),
 )
 
 offers = Table(
     'offers', meta,
     Column('id', Integer, primary_key = True),
-    Column('Owner', Integer),
-    Column('Seeking', String),
-    Column('SeekingQuantity', Integer),
-    Column('Providing', String),
-    Column('ProvidingQuantity', Integer),
-    Column('Created', String),
-    Column('Expiring', String),
-    Column('Fulfilled', Integer),
-    Column('FulfilledBy', Integer),
-    Column('FulfilledWhen', String),
+    Column('owner', Integer),
+    Column('created', String),
+    Column('expiring', Integer),
+    Column('fulfilled', Boolean),
+    Column('fulfilledBy', Integer),
+    Column('fulfilledDate', String),
+)
+
+offer_data = Table(
+    'offer_data', meta,
+    Column('id', Integer),
+    Column('seeking', ARRAY(Integer, dimensions=2)),
+    Column('providing', ARRAY(Integer, dimensions=2)),
+    Column('id', Integer, primary_key = True),
+
 )
 
 itemIds = Table(
     'itemIds', meta,
-    Column('id', String),
-    Column('Name', String)
+    Column('id', String, primary_key = True),
+    Column('Name', String),
 )
 
 withdraws = Table(
     'withdraws', meta,
     Column('id', Integer, primary_key = True),
-    Column('muleID', Integer),
     Column('mmID', Integer),
     Column('recipient', String),
     Column('server', String),
@@ -101,10 +92,15 @@ withdraws = Table(
     Column('expired', Integer),
 )
 
+withdrawnItems = Table(
+    'withdrawnItems', meta,
+    Column('withdrawID', Integer),
+    Column('itemIds', ARRAY(Integer, dimensions=1)),
+)
+
 deposits = Table(
     'deposits', meta,
     Column('id', Integer, primary_key = True),
-    Column('muleID', Integer),
     Column('mmID', Integer),
     Column('IGN', String),
     Column('server', String),
@@ -112,20 +108,17 @@ deposits = Table(
     Column('completed', Integer),
     Column('dateTimeInitialized', String),
     Column('expired', Integer),
-    Column('deposited', String), #Just import comma seperated string of ids
+)
+
+depositedItems = Table(
+    'depositedItems', meta,
+    Column('depositId', Integer),
+    Column('items', ARRAY(Integer, dimensions=2)),
+    Column('id', Integer, primary_key = True),
+
 )
 #Table has been created. Will leave code above for reference. Note sure what the correct standards are for handling database itililization code.
 meta.create_all(engine)
-
-
-conn = engine.connect()
-s = items.select()
-result = conn.execute(s)
-
-row = result.fetchone()
-
-for row in result:
-    print (row)
 
 # Script to search for life pots
 # print("Searching through database to locate life pots...")

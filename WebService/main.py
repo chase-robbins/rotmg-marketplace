@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, request, session, flash
+from flask import Flask, redirect, url_for, render_template, request, session, flash, jsonify
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
 import src
@@ -13,7 +13,11 @@ db = SQLAlchemy(app)
 @app.route("/")
 def home():
     offersReturn = src.listTheOffers()
-    return render_template("home.html", offers = offersReturn, Source = src)
+    if "UID" in session:
+        list = src.listItemsFromUID(session["UID"]).fetchall()
+        return render_template("home.html", offers = offersReturn, items = list, invUsed = len(list))
+    else:
+        return render_template("home.html", offers = offersReturn)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -53,13 +57,13 @@ def user():
     print(activeOffers)
     if request.method == "POST":
         str = request.form["search"]
-        list = src.invSearch(str, session["UID"])
-        return render_template("user.html", items = list)
+        list = src.invSearch(str, session["UID"]).fetchall()
+        return render_template("user.html", items = list, invUsed = len(list), activeOffers = activeOffers)
     else:
         if "UID" in session:
             ign = src.getIGN(session["UID"])
-            list = src.listItemsFromUID(session["UID"])
-            return render_template("user.html", items = list, ign = ign, activeOffers = activeOffers)
+            list = src.listItemsFromUID(session["UID"]).fetchall()
+            return render_template("user.html", items = list, ign = ign, activeOffers = activeOffers, invUsed = len(list), capacity = src.getCapacity(session["UID"]))
         else:
             return redirect(url_for("login"))
 
@@ -94,6 +98,15 @@ def offer():
             return render_template("offer.html")
 
 
+@app.route("/postoffer", methods=['GET'])
+def postOffer():
+        data = request.get_json(force=True)
+        item = data.get('item')
+
+        return jsonify({
+        'message': 'something...'
+        })
+
 
 @app.route("/withdraw", methods=['POST'])
 def withdraw(itemID):
@@ -105,6 +118,10 @@ app.jinja_env.filters['getIGN'] = src.getIGN
 app.jinja_env.filters['getItemName'] = src.getItemName
 app.jinja_env.filters['getItemImage'] = src.getItemImage
 app.jinja_env.filters['str'] = str
+
+@app.template_filter()
+def vue(item):
+    return "{{ " + item + " }}"
 
 
 if __name__ == "__main__":

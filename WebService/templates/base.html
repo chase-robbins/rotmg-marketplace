@@ -10,7 +10,13 @@
       <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
       <style>
          .bd-placeholder-img {
          font-size: 1.125rem;
@@ -26,18 +32,7 @@
          }
          }
       </style>
-      <script>
-      $(function(){
-       $('[data-toggle=popover]').popover({
-              trigger: 'hover',
-              html: true,
-              content: function () {
-                    return $('#ToolMenu').html();
-              },
-              title: 'Toolbox'
-        })
-    });
-    </script>
+
       <!-- Custom styles for this template -->
       <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
    </head>

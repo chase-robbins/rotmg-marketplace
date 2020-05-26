@@ -20,7 +20,7 @@ def iterate():
         id = stripped_line[start:end]
         start = stripped_line.find(":")+1
         name = stripped_line[start:]
-        #print(name + " " + id)
+        print(name + " " + id)
         s = DBManager.itemIds.insert().values(id = id, Name = name)
         result = conn.execute(s)
 
@@ -31,6 +31,8 @@ def listOffers():
     results = conn.execute(s)
     for result in results:
         print(result)
-    return result
+    return results
 
 listOffers()
+
+iterate()

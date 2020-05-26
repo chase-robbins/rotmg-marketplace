@@ -21,7 +21,7 @@ def createAcc(ign, email, password):
 
 #Function that returns the UID of a certain IGN
 def getUID(email):
-    s = DBManager.users.select().where(DBManager.users.c.Email == email)
+    s = DBManager.users.select().where(DBManager.users.c.email == email)
     result = conn.execute(s)
     row = result.fetchone()
     while row:
@@ -31,7 +31,7 @@ def getUID(email):
 
 #Login Function
 def tryLogin(email, password):
-    s = DBManager.users.select().where(DBManager.users.c.Email == email)
+    s = DBManager.users.select().where(DBManager.users.c.email == email)
     result = conn.execute(s)
     row = result.fetchone()
     while row:
@@ -47,12 +47,12 @@ def tryLogin(email, password):
 
 #Function to test Deposits
 def testDeposit(itemID, UID):
-    s = DBManager.items.insert().values(Owner = UID, GameID = itemID)
+    s = DBManager.items.insert().values(owner = UID, gameId = itemID)
     result = conn.execute(s)
 
 #list the items of a player given their UID
 def listItemsFromUID(UID):
-    s = DBManager.items.select().where(DBManager.items.c.Owner == UID)
+    s = DBManager.items.select().where(DBManager.items.c.owner == UID)
     result = conn.execute(s)
     return result
 
@@ -85,13 +85,13 @@ def getItemImage(id):
     return "\"{{ url_for('static', filename='items/" + id + ".png') }}\""
 
 def getActiveOffers(id):
-    # s = DBManager.offers.select().where(and_(DBManager.offers.c.Owner == id, DBManager.offers.c.Fulfilled != 1))
-    s = DBManager.offers.select().where(DBManager.offers.c.Owner == id)
+    # s = DBManager.offers.select().where(and_(DBManager.offers.c.owner == id, DBManager.offers.c.Fulfilled != 1))
+    s = DBManager.offers.select().where(DBManager.offers.c.owner == id)
     result = conn.execute(s)
     return result
 
 def withdraw(itemid, userid):
-        s = DBManager.items.select().where(DBManager.items.c.Owner == str(userid))
+        s = DBManager.items.select().where(DBManager.items.c.owner == str(userid))
         result = conn.execute(s)
         print(result.fetchall())
 
@@ -100,7 +100,13 @@ def getAllItems():
         result = conn.execute(s)
         return result.fetchall()
 
+def getCapacity(UID):
+    s = DBManager.users.select().where(DBManager.users.c.id == UID)
+    result = conn.execute(s).fetchone()
+    return result[5]
+
+
 #create test offer
-def createTestOffer(seeking, seekingq, providing, providingq, uid):
-    s = DBManager.offers.insert().values(Owner = uid, Seeking = seeking, SeekingQuantity = seekingq, Providing = providing, ProvidingQuantity = providingq, Created = datetime.now())
-    result = conn.execute(s)
+# def createTestOffer(seeking, seekingq, providing, providingq, uid):
+#     s = DBManager.offers.insert().values(owner = uid, seeking = seeking, SeekingQuantity = seekingq, Providing = providing, ProvidingQuantity = providingq, Created = datetime.now())
+#     result = conn.execute(s)

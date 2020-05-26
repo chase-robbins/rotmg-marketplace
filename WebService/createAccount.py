@@ -18,15 +18,15 @@ def main(ign, email, password, users):
     print("password: " + password)
 
     #Check Email Not Used Before First
-    if session.query(users).filter_by(Email=email).count() > 0:
+    if session.query(users).filter_by(email=email).count() > 0:
         flash("Email in use.")
         return False
     else:
         #To check that the ingame name has not been used before.
-        if session.query(users).filter_by(IGN=ign, Verified=1).count() == 0:
+        if session.query(users).filter_by(ign=ign, verified=1).count() == 0:
             if len(password) > 7:
                 flash("Account Created Successfully")
-                s = users.insert().values(IGN = ign, Password = pwSalting.hash_password(password), Email = email, RegistrationDate = datetime.now(), StorageCapacity = 10, StorageUsed = 0 )
+                s = users.insert().values(ign = ign, password = pwSalting.hash_password(password), email = email, registrationDate = datetime.now(), storageCapacity = 10, storageUsed = 0 )
                 result = conn.execute(s)
                 return True
             else:

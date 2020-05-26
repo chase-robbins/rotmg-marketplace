@@ -13,7 +13,7 @@
     {% endif %}
   {% endwith %}
 
-  <form class="form-signin" action="#" method="post">
+  <form class="form-signin" onsubmit="return submit_form();">
     <img class="mb-4" src="{{ url_for('static', filename='img/wiz.png') }}" alt="" width="72" height="72">
     <h4> New offer to sell... </h4>
     <input type="text" autofocus list="inventoryitems" class="form-control" required placeholder="Item" name="supplying"/>
@@ -22,17 +22,40 @@
         <option>{{ item[3]|getItemName }}</option>
       {% endfor %}
     </datalist>
-    <input type="number" class="form-control" placeholder="Quantity" required name="supplyingq">
+    <input type="number" class="form-control" placeholder="Quantity" required name="supplyingq" />
     <br><h4> In exchange for... </h4>
-    <input type="text" list="allItems" class="form-control" required placeholder="Item" name="recieving"/>
-    <datalist id="allItems">
+
+    <select class="selectpicker" id='x' multiple data-live-search="true">
+
       {% for item in itemIds %}
         <option>{{ item[0]|getItemName }}</option>
       {% endfor %}
-    </datalist>
+
+    </select>
+    <div id='test'>
+
+    </div>
     <input type="number" class="form-control" placeholder="Quantity" required name="recievingq">
     <button class="btn btn-lg btn-primary btn-block" type="submit">Post Offer</button>
     <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
   </form>
 </div>
+<script type="text/javascript">
+  $('select').selectpicker();
+  $('#x').change(function(){
+    let q = ''
+    v = $('#x').val()
+    console.log(v)
+    for (i of v ){
+      q += `<input placeholder="Quantity for ${i}" class="quantity" data-items="${i}" type="number"><br>`
+    }
+    document.getElementById('test').innerHTML =  q
+  })
+
+  function submit_form(){
+    quantity = $('.quantity')
+    console.log(qantity)
+    return false;
+  }
+</script>
 {% endblock %}
