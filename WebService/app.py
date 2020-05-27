@@ -96,11 +96,24 @@ def offer():
 
 @app.route("/postoffer", methods=['POST'])
 def postOffer():
+        buying = []
+        selling = []
         data = request.get_json(force=True)
-        print(data)
+        for item in data:
+            print(item)
+            item['name'] = item['name'].replace('buying-quantity-', 'b-').replace('selling-quantity-', 's-')
+            #1 = buy, 2 = sell
+            if item['name'][:2] == 'b-':
+                buying.append(src.getItemID(item['name'][2:]) + "x" + str(item['value']))
+            else:
+                selling.append(src.getItemID(item['name'][2:]) + "x" + str(item['value']))
+
+        print(str(buying) + " | " + str(selling))
+        id = session['UID']
+        src.createOffer(id, buying, selling)
 
         return jsonify({
-        'message': 'something...'
+        'message': 'Offer Posted'
         })
 
 
@@ -114,10 +127,6 @@ app.jinja_env.filters['getIGN'] = src.getIGN
 app.jinja_env.filters['getItemName'] = src.getItemName
 app.jinja_env.filters['getItemImage'] = src.getItemImage
 app.jinja_env.filters['str'] = str
-
-@app.template_filter()
-def vue(item):
-    return "{{ " + item + " }}"
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ import listOffers
 import createAccount
 import pwSalting
 from flask import flash
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import func
 
 #Connect to Database
@@ -112,11 +112,6 @@ def listItemsFromUID(UID):
     result = conn.execute(s)
     return result
 
-
-# psuedocode: iterate through each item in inv and keep track of ids (if they're unique) as first parameter in dictionary.
-# then, iterate through each item again for quantity and add that as second parameter in dictionary.
-#
-# select name, count(*) from table WHERE user=123 group by name
 def getItemsForInventory(UID):
     ## QUESTION: import pdb; pdb.set_trace()
     var = DBManager.session.query(
@@ -130,3 +125,16 @@ def getInvUsed(UID):
     s = DBManager.items.select().where(DBManager.items.c.owner == UID)
     result = conn.execute(s)
     return len(result.fetchall())
+
+def createOffer(UID, seeking, providing):
+    end_date = datetime.now() + timedelta(days=1)
+    s = DBManager.offers.insert().values(owner = UID, created = datetime.now(), expiring = end_date, fulfilled = False, fulfilledBy = None, fulfilledDate = None)
+    result = conn.execute(s)
+    s = DBManager.offer_data.insert().values(id = result.inserted_primary_key[0], seeking = seeking, providing = providing)
+    result = conn.execute(s)
+
+def getItemID(str):
+    s = DBManager.itemIds.select().where(DBManager.itemIds.c.Name == str)
+    result = conn.execute(s)
+    return result.fetchone()[0]
+# def parseOffer(offerId):

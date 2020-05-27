@@ -62,17 +62,17 @@ offers = Table(
     Column('id', Integer, primary_key = True),
     Column('owner', Integer),
     Column('created', String),
-    Column('expiring', Integer),
+    Column('expiring', String),
     Column('fulfilled', Boolean),
-    Column('fulfilledBy', Integer),
+    Column('fulfilledBy', String),
     Column('fulfilledDate', String),
 )
 
 offer_data = Table(
     'offer_data', meta,
     Column('id', Integer),
-    Column('seeking', ARRAY(Integer, dimensions=2)),
-    Column('providing', ARRAY(Integer, dimensions=2)),
+    Column('seeking', ARRAY(String)),
+    Column('providing', ARRAY(String)),
     Column('id', Integer, primary_key = True),
 
 )
@@ -118,7 +118,6 @@ depositedItems = Table(
     Column('depositId', Integer),
     Column('items', ARRAY(Integer, dimensions=2)),
     Column('id', Integer, primary_key = True),
-
 )
 #Table has been created. Will leave code above for reference. Note sure what the correct standards are for handling database itililization code.
 meta.create_all(engine)
