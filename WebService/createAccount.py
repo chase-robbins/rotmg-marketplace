@@ -4,6 +4,7 @@ from flask import flash
 from sqlalchemy.sql import exists
 from sqlalchemy.orm import sessionmaker
 import pwSalting
+import random
 
 #Connect to DB (next 2)
 engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
@@ -16,17 +17,17 @@ def main(ign, email, password, users):
     print("ign: " + ign)
     print("email: " + email)
     print("password: " + password)
-
+    verificationString = str(random.randint(1000,9999))
     #Check Email Not Used Before First
     if session.query(users).filter_by(email=email).count() > 0:
         flash("Email in use.")
         return False
     else:
         #To check that the ingame name has not been used before.
-        if session.query(users).filter_by(ign=ign, verified=1).count() == 0:
+        if session.query(users).filter_by(ign=ign, verified=True).count() == 0:
             if len(password) > 7:
                 flash("Account Created Successfully")
-                s = users.insert().values(ign = ign, password = pwSalting.hash_password(password), email = email, registrationDate = datetime.now(), storageCapacity = 10, storageUsed = 0 )
+                s = users.insert().values(ign = ign, password = pwSalting.hash_password(password), email = email, registrationDate = datetime.now(), storageCapacity = 10, storageUsed = 0, verificationString = verificationString, tier = 1)
                 result = conn.execute(s)
                 return True
             else:

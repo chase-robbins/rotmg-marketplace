@@ -34,7 +34,7 @@
           {% for item in items %}
             <li class="list-group-item"><img src="{{ url_for('static', filename='items/' + item[0]|str + '.png') }}"> {{ item[0]|getItemName }}
               {% if item[1] > 1 %}
-                x {{ item[1] }}</li>
+                <sub>x {{ item[1] }}</sub></li>
               {% endif %}
           {% endfor %}
         </ul>
@@ -42,16 +42,24 @@
     </div>
 
     <div class="col col-lg-4">
-      <a href="/offer" target="_blank"><button type="button" class="btn btn-secondary">Create Offer</button></a>
-      <button type="button" class="btn btn-info">Make Profile Public</button>
+      <div class="invButtons"><a href="/offer" target="_blank"><button type="button" class="btn btn-secondary">Create Offer</button></a> <button type="button" class="btn btn-secondary">Withdraw Items</button>
+      <button type="button" class="btn btn-info">Make Profile Public</button></div>
       <hr>
       <h4>Active Offers</h4>
-      <h6>Offer Capacity: 1/10</h6>
+      <h6>Offer Capacity: {{ activeOffers|len }}/{{ capacity }}</h6>
       {% if activeOffers is none %}
         <p>None</p>
       {% else %}
-        {% for offer in activeOffers %}
-        <li class="list-group-item">{{ offer[5]|str }}x<img src="{{ url_for('static', filename='items/' + offer[4]|str + '.png') }}"> for {{ offer[3] }}x<img src="{{ url_for('static', filename='items/' + offer[2]|str + '.png') }}"></li>
+        {% for justOffer in activeOffers %}
+        <li class="list-group-item">
+          {% for itemarray in justOffer[2] %}
+          <sub>{{ (itemarray|parseOffer)[0] }} x</sub><img src="{{ url_for('static', filename='items/' + ((itemarray|parseOffer)[1]) + '.png') }}">
+          {% endfor %}
+          for
+          {% for itemarray in justOffer[1] %}
+            <sub>{{ (itemarray|parseOffer)[0] }} x</sub><img src="{{ url_for('static', filename='items/' + ((itemarray|parseOffer)[1]) + '.png') }}">
+          {% endfor %}
+        </li>
         {% endfor %}
       {% endif %}
       <hr>

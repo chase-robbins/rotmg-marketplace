@@ -62,13 +62,7 @@
     .replace(/^-+/, '') // Trim - from start of text
     .replace(/-+$/, '') // Trim - from end of text
 }
-  const jsonString = JSON.stringify(toSend);
 
-  const xhr = new XMLHttpRequest();
-
-  xhr.open("POST", "postoffer");
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.send(jsonString);
   function createRemoveFields(t, selector){
 
     var values = $(t).val() || [];
@@ -84,7 +78,7 @@
     values.forEach(item => {
       var slug = slugify(item)
       if ($("#quantity-" + slug).length == 0) {
-        quantity.append($('<input data-val="'+item+'" id="quantity-' + slug + '" type="number" class="form-control quantity" placeholder="Quantity '+ item + '" required name="'+selector + '-' + item+'" />'))
+        quantity.append($('<input required data-val="'+item+'" id="quantity-' + slug + '" type="number" class="form-control quantity" placeholder="Quantity '+ item + '" required name="'+selector + '-' + item+'"/>'))
       }
     })
 
@@ -106,7 +100,11 @@
         type: 'POST',
         contentType: 'application/json',
         success: function(response) {
-          console.log(response)
+          if(Object.values(response) != "Success"){
+            alert(Object.values(response)[0]);
+          } else {
+            close()
+          }
         }
       })
     })

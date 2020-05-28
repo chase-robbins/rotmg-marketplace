@@ -81,3 +81,6 @@ html {
   width:auto;
   min-width:150px;
 }
+.invButtons button{
+  margin-bottom:5px;
+}

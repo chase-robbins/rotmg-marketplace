@@ -16,8 +16,13 @@
     <div class="col">
       <h4>Browse All Offers</h4>
       <!-- SEARCH BAR -->
-      <form class="form-inline searchbar">
-        <input class="form-control mr-sm-2 searchbar-input" type="search" placeholder="Search" aria-label="Search">
+      <form class="form-inline searchbar" action="#" method="POST">
+        <input list="items" class="form-control mr-sm-2 searchbar-input" name="item">
+        <datalist id="items">
+          {% for item in itemIds %}
+            <option>{{ item[1] }}</option>
+          {% endfor %}
+        </datalist>
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
       </form>
       <ul class="list-group">
@@ -28,7 +33,7 @@
     </div>
     <div class="col col-lg-4">
       <h4>Your Inventory</h4>
-      <h6>Storage Used: {{ invUsed }}/50</h6>
+      <h6>Storage Used: {{ invUsed }}/{{ capacity }}</h6>
       <ul class="list-group">
         {% for item in items %}
           <li class="list-group-item"><img src="{{ url_for('static', filename='items/' + item[2]|str + '.png') }}" /> {{ item[2]|getItemName }}</li>
@@ -36,7 +41,7 @@
       </ul>
       <hr>
       <h4>Your Offers</h4>
-      <h6>Offer Capacity: 1/10</h6>
+      <h6>Offer Capacity: 1/{{ capacity }}</h6>
       <ul class="list-group">
         <li class="list-group-item">1x<img src="https://static.drips.pw/rotmg/wiki/Weapons/Staves/T11%20Staff%20of%20Yuletide%20Carols.png" /> for 3x<img src="https://i.imgur.com/scbKnF0.png" /> </li>
       </ul>

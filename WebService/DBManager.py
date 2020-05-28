@@ -53,7 +53,7 @@ users = Table(
     Column('storageCapacity', Integer),
     Column('storageUsed', Integer),
     Column('verificationString', String),
-    Column('verified', Integer),
+    Column('verified', Boolean, default = False),
     Column('tier', Integer),
 )
 

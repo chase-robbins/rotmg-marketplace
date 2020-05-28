@@ -10,14 +10,27 @@ app.permanent_session_lifetime = timedelta(days=5)
 
 db = SQLAlchemy(app)
 
-@app.route("/")
+@app.route("/", methods=["POST", "GET"])
 def home():
-    offersReturn = src.listTheOffers()
-    if "UID" in session:
-        list = src.listItemsFromUID(session["UID"]).fetchall()
-        return render_template("home.html", offers = offersReturn, items = list, invUsed = len(list))
+    if request.method == "POST":
+        offersReturn = src.listTheOffers()
+        search = request.form["item"]
+        searchID = src.getItemID(search)
+        print(searchID)
+        if "UID" in session:
+            itemIds = src.getAllItems()
+            list = src.listItemsFromUID(session["UID"]).fetchall()
+            return render_template("home.html", offers = offersReturn, items = list, invUsed = len(list), itemIds = itemIds, capacity = src.getCapacity(session["UID"]))
+        else:
+            return render_template("home.html", offers = offersReturn)
     else:
-        return render_template("home.html", offers = offersReturn)
+        offersReturn = src.listTheOffers()
+        if "UID" in session:
+            itemIds = src.getAllItems()
+            list = src.listItemsFromUID(session["UID"]).fetchall()
+            return render_template("home.html", offers = offersReturn, items = list, invUsed = len(list), itemIds = itemIds, capacity = src.getCapacity(session["UID"]))
+        else:
+            return render_template("home.html", offers = offersReturn)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -53,13 +66,11 @@ def register():
 
 @app.route("/user", methods=["POST", "GET"])
 def user():
-    activeOffers = src.getActiveOffers(session["UID"]).fetchall()
-    print(activeOffers)
     if "UID" in session:
+        activeOffers = src.getActiveOffers(session["UID"])
         ign = src.getIGN(session["UID"])
         list = src.getItemsForInventory(session["UID"])
-        invUsed = src.getInvUsed(session["UID"])
-        return render_template("user.html", items = list, ign = ign, activeOffers = activeOffers, invUsed = invUsed, capacity = src.getCapacity(session["UID"]))
+        return render_template("user.html", items = list, ign = ign, activeOffers = activeOffers, invUsed = src.getInvUsed(session["UID"]), capacity = src.getCapacity(session["UID"]))
     else:
         return redirect(url_for("login"))
 
@@ -100,21 +111,18 @@ def postOffer():
         selling = []
         data = request.get_json(force=True)
         for item in data:
-            print(item)
+            if item['value'] == '' or int(item['value']) < 1:
+                return jsonify({'message': 'Quantity can not be zero.'})
             item['name'] = item['name'].replace('buying-quantity-', 'b-').replace('selling-quantity-', 's-')
             #1 = buy, 2 = sell
             if item['name'][:2] == 'b-':
-                buying.append(src.getItemID(item['name'][2:]) + "x" + str(item['value']))
+                buying.append(str(item['value']) + "x" + src.getItemID(item['name'][2:]))
             else:
-                selling.append(src.getItemID(item['name'][2:]) + "x" + str(item['value']))
+                selling.append(str(item['value']) + "x" + src.getItemID(item['name'][2:]))
 
-        print(str(buying) + " | " + str(selling))
         id = session['UID']
-        src.createOffer(id, buying, selling)
+        return jsonify({'message': src.createOffer(id, buying, selling)})
 
-        return jsonify({
-        'message': 'Offer Posted'
-        })
 
 
 @app.route("/withdraw", methods=['POST'])
@@ -127,6 +135,9 @@ app.jinja_env.filters['getIGN'] = src.getIGN
 app.jinja_env.filters['getItemName'] = src.getItemName
 app.jinja_env.filters['getItemImage'] = src.getItemImage
 app.jinja_env.filters['str'] = str
+app.jinja_env.filters['parseOffer'] = src.parseOffer
+app.jinja_env.filters['len'] = len
+
 
 
 if __name__ == "__main__":
