@@ -1,7 +1,6 @@
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, and_
 import DBManager
 import InitiateTransaction
-import listOffers
 import createAccount
 import pwSalting
 from flask import flash
@@ -76,13 +75,19 @@ def invSearch(str, UID):
     return newList
 
 def searchOffers(itemId):
-    s = DBManager.offers.select().where(DBManager.users.c.id == UID)
-    result = conn.execute(s)
-    newList = []
+    s = DBManager.offer_data.select()
+    result = conn.execute(s).fetchall()
+    print(result)
     for item in result:
-        if str in item[1]:
-            newList.append(item)
-    return newList
+        itemisthere = False
+        seekingObj = item[1]
+        for lilPart in seekingObj:
+            if str(itemId) in lilPart:
+                itemisthere = True
+        if itemisthere == False:
+            result.remove(item)
+    print(result)
+    return result
 
 #get the name of an item from the GameID number
 def getItemName(id):
@@ -167,7 +172,7 @@ def createOffer(UID, seeking, providing):
     s = DBManager.offers.insert().values(owner = UID, created = datetime.now(), expiring = end_date, fulfilled = False, fulfilledBy = None, fulfilledDate = None)
     result = conn.execute(s)
     s = DBManager.offer_data.insert().values(id = result.inserted_primary_key[0], seeking = seeking, providing = providing)
-    result = conn.execute(s)se
+    result = conn.execute(s)
     print(providing)
     return "Success"
 
@@ -182,5 +187,15 @@ def parseOffer(str):
     arr.append(str.split('x',1)[1])
     return arr
 
-def isInOffer(str):
-    s = DBManager.items.select().where(DBManager.items.c.id == id)
+def getOfferData(offerId):
+    buying = []
+    selling = []
+    s = DBManager.offer_data.select().where(DBManager.offer_data.c.id == offerId)
+    result = conn.execute(s).fetchall()
+    for object in result:
+        buying.append(object[1])
+        selling.append(object[2])
+    finalObject = []
+    finalObject.append(buying)
+    finalObject.append(selling)
+    return finalObject

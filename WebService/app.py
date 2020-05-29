@@ -13,9 +13,9 @@ db = SQLAlchemy(app)
 @app.route("/", methods=["POST", "GET"])
 def home():
     if request.method == "POST":
-        offersReturn = src.listTheOffers()
         search = request.form["item"]
         searchID = src.getItemID(search)
+        offersReturn = src.searchOffers(search)
         print(searchID)
         if "UID" in session:
             itemIds = src.getAllItems()
@@ -137,6 +137,8 @@ app.jinja_env.filters['getItemImage'] = src.getItemImage
 app.jinja_env.filters['str'] = str
 app.jinja_env.filters['parseOffer'] = src.parseOffer
 app.jinja_env.filters['len'] = len
+app.jinja_env.filters['getOfferData'] = src.getOfferData
+app.jinja_env.filters['log'] = print
 
 
 
