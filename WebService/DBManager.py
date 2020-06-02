@@ -131,3 +131,6 @@ meta.create_all(engine)
 #     print (row)
 
 #TransactionArray = ["Hello world.", "Dog"]
+
+def DropAll():
+    Base.metadata.drop_all(engine)
