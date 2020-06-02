@@ -7,7 +7,7 @@ Base = declarative_base()
 meta = MetaData()
 
 #create engine for SQLAlchemy ORM
-engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
+engine = create_engine('postgresql://postgres:testingPassword@maik8.de/postgres')
 
 session = Session(bind=engine)
 

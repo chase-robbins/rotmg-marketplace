@@ -14,12 +14,14 @@ db = SQLAlchemy(app)
 def home():
     if request.method == "POST":
         search = request.form["item"]
-        searchID = src.getItemID(search)
-        offersReturn = src.searchOffers(search)
-        print(searchID)
+        if search != "":
+            searchID = src.getItemID(search)
+            offersReturn = src.searchOffers(search)
         if "UID" in session:
             itemIds = src.getAllItems()
             list = src.listItemsFromUID(session["UID"]).fetchall()
+            if search == "":
+                offersReturn = src.listTheOffers()
             return render_template("home.html", offers = offersReturn, items = list, invUsed = len(list), itemIds = itemIds, capacity = src.getCapacity(session["UID"]))
         else:
             return render_template("home.html", offers = offersReturn)
