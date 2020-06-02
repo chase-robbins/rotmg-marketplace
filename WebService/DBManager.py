@@ -11,6 +11,9 @@ engine = create_engine('postgresql://postgres:testingPassword@maik8.de/postgres'
 
 session = Session(bind=engine)
 
+def DropAll():
+    Base.metadata.drop_all(engine)
+    
 items = Table(
     'items', meta,
     Column('id', Integer, primary_key = True),
@@ -120,6 +123,7 @@ depositedItems = Table(
     Column('id', Integer, primary_key = True),
 )
 #Table has been created. Will leave code above for reference. Note sure what the correct standards are for handling database itililization code.
+DropAll()
 meta.create_all(engine)
 
 # Script to search for life pots
@@ -131,6 +135,3 @@ meta.create_all(engine)
 #     print (row)
 
 #TransactionArray = ["Hello world.", "Dog"]
-
-def DropAll():
-    Base.metadata.drop_all(engine)
