@@ -7,7 +7,7 @@ import pwSalting
 import random
 
 #Connect to DB (next 2)
-engine = create_engine('postgresql://postgres:testingPassword@maik8.de/postgres')
+engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
 conn = engine.connect()
 Session = sessionmaker(bind=engine)
 session = Session()

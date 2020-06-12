@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import func
 
 #Connect to Database
-engine = create_engine('postgresql://postgres:testingPassword@maik8.de/postgres')
+engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
 conn = engine.connect()
 
 #Function to list items in database

@@ -2,7 +2,7 @@ from sqlalchemy import select, create_engine, MetaData, Table, Column, Integer, 
 
 
 #Connect to DB (next 2)
-engine = create_engine('postgresql://postgres:testingPassword@maik8.de/postgres')
+engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
 conn = engine.connect()
 
 #Method to find the mule that is holding item in question

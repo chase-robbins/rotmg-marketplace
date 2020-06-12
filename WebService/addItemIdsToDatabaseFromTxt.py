@@ -8,7 +8,7 @@ import DBManager
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
 
 
-engine = create_engine('postgresql://postgres:testingPassword@maik8.de/postgres')
+engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
 conn = engine.connect()
 
 def iterate():

@@ -16,7 +16,7 @@ def home():
         search = request.form["item"]
         if search != "":
             searchID = src.getItemID(search)
-            offersReturn = src.searchOffers(search)
+            offersReturn = src.searchOffers(searchID)
         if "UID" in session:
             itemIds = src.getAllItems()
             list = src.listItemsFromUID(session["UID"]).fetchall()
