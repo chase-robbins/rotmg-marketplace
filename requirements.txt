@@ -5,3 +5,5 @@ pynput
 flask
 flask_sqlalchemy
 psycopg2
+gunicorn
+bs4

@@ -78,7 +78,7 @@
     values.forEach(item => {
       var slug = slugify(item)
       if ($("#quantity-" + slug).length == 0) {
-        quantity.append($('<input required data-val="'+item+'" id="quantity-' + slug + '" type="number" class="form-control quantity" placeholder="Quantity '+ item + '" required name="'+selector + '-' + item+'"/>'))
+        quantity.append($('<input required data-val="'+item+'" id="quantity-' + slug + '" type="number" class="form-control quantity" placeholder="Quantity of '+ item + '" required name="'+selector + '-' + item+'"/>'))
       }
     })
 

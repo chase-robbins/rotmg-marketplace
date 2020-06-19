@@ -16,7 +16,7 @@ def home():
         search = request.form["item"]
         if search != "":
             searchID = src.getItemID(search)
-            offersReturn = src.searchOffers(search)
+            offersReturn = src.searchOffers(searchID)
         if "UID" in session:
             itemIds = src.getAllItems()
             list = src.listItemsFromUID(session["UID"]).fetchall()
@@ -106,6 +106,11 @@ def offer():
         else:
             return render_template("offer.html")
 
+@app.route("/offer/<offerid>", methods=["POST", "GET"])
+def offerid(offerid):
+    buying = src.getOfferData(offerid)[0][0]
+    selling = src.getOfferData(offerid)[1][0]
+    return render_template("offerid.html", buying = buying, selling = selling, id = offerid)
 
 @app.route("/postoffer", methods=['POST'])
 def postOffer():
@@ -141,6 +146,8 @@ app.jinja_env.filters['parseOffer'] = src.parseOffer
 app.jinja_env.filters['len'] = len
 app.jinja_env.filters['getOfferData'] = src.getOfferData
 app.jinja_env.filters['log'] = print
+app.jinja_env.filters['getOfferOwner'] = src.getOfferOwner
+app.jinja_env.filters['getOfferOwnerId'] = src.getOfferOwnerId
 
 
 
