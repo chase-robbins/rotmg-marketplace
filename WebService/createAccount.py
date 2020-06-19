@@ -24,7 +24,7 @@ def main(ign, email, password, users):
         return False
     else:
         #To check that the ingame name has not been used before.
-        if session.query(users).filter_by(ign=ign, verified=1).count() == 0:
+        if session.query(users).filter_by(ign=ign, verified=True).count() == 0:
             if len(password) > 7:
                 flash("Account Created Successfully")
                 s = users.insert().values(ign = ign, password = pwSalting.hash_password(password), email = email, registrationDate = datetime.now(), storageCapacity = 10, storageUsed = 0, verificationString = verificationString, tier = 1)
