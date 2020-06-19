@@ -199,3 +199,16 @@ def getOfferData(offerId):
     finalObject.append(buying)
     finalObject.append(selling)
     return finalObject
+
+def getOfferOwner(offerId):
+    s = DBManager.offers.select().where(DBManager.offers.c.id == offerId)
+    result = conn.execute(s).fetchone()
+    ownerId = result[1]
+    s = DBManager.users.select().where(DBManager.users.c.id == ownerId)
+    result = conn.execute(s).fetchone()
+    return result[1]
+
+def getOfferOwnerId(offerId):
+    s = DBManager.offers.select().where(DBManager.offers.c.id == offerId)
+    result = conn.execute(s).fetchone()
+    return result[1]
