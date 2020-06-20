@@ -31,19 +31,22 @@
         </li>
         {% for offer in offers %}
           <li class="list-group-item">
-            {% for itemArray in (offer[0]|getOfferData)[0] %} <!-- for buying its sub zero, for selling its sub 1-->
-              {% for item in itemArray %}
-                <sub>{{ (item|parseOffer)[0] }}x</sub>
-                <img src="{{ url_for('static', filename='items/' + (item|parseOffer)[1] + '.png') }}" />
+           <div style="display:flex;flex-direction:row;justify-content:flex-start;align-items: center">
+              {% for itemArray in (offer[0]|getOfferData)[0] %} <!-- for buying its sub zero, for selling its sub 1-->
+                {% for item in itemArray %}
+                  <sub>{{ (item|parseOffer)[0] }}x</sub>
+                  <img src="{{ url_for('static', filename='items/' + (item|parseOffer)[1] + '.png') }}" />
+                {% endfor %}
               {% endfor %}
-            {% endfor %}
-            for
-            {% for itemArray in (offer[0]|getOfferData)[1] %} <!-- for buying its sub zero, for selling its sub 1-->
-              {% for item in itemArray %}
-                <sub>{{ (item|parseOffer)[0] }}x</sub>
-                <img src="{{ url_for('static', filename='items/' + (item|parseOffer)[1] + '.png') }}" />
+              <span style="margin-left:5px;margin-right:5px;"> for </span>
+              {% for itemArray in (offer[0]|getOfferData)[1] %} <!-- for buying its sub zero, for selling its sub 1-->
+                {% for item in itemArray %}
+                  <sub>{{ (item|parseOffer)[0] }}x</sub>
+                  <img src="{{ url_for('static', filename='items/' + (item|parseOffer)[1] + '.png') }}" />
+                {% endfor %}
               {% endfor %}
-            {% endfor %}
+              <span style="margin-left: auto;"><a href="/offer/{{ offer[0] }}" style="align-self:center">View Offer</a></span>
+            </div>
           </li>
         {% endfor %}
       </ul>

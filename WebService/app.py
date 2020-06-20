@@ -130,8 +130,6 @@ def postOffer():
         id = session['UID']
         return jsonify({'message': src.createOffer(id, buying, selling)})
 
-
-
 @app.route("/withdraw", methods=['POST'])
 def withdraw(itemID):
         src.withdraw(itemID, session["UID"])
