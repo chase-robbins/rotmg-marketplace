@@ -42,7 +42,7 @@
     </div>
 
     <div class="col col-lg-4">
-      <div class="invButtons"><a href="/offer" target="_blank"><button type="button" class="btn btn-secondary">Create Offer</button></a> <button type="button" class="btn btn-secondary">Withdraw Items</button>
+      <div class="invButtons"><a href="/offer"><button type="button" class="btn btn-secondary">Create Offer</button></a> <button type="button" class="btn btn-secondary">Withdraw Items</button>
       <button type="button" class="btn btn-info">Make Profile Public</button></div>
       <hr>
       <h4>Active Offers</h4>
@@ -52,13 +52,16 @@
       {% else %}
         {% for justOffer in activeOffers %}
         <li class="list-group-item">
-          {% for itemarray in justOffer[2] %}
-          <sub>{{ (itemarray|parseOffer)[0] }} x</sub><img src="{{ url_for('static', filename='items/' + ((itemarray|parseOffer)[1]) + '.png') }}">
-          {% endfor %}
-          for
-          {% for itemarray in justOffer[1] %}
+          <div style="display:flex;flex-direction:row;justify-content:flex-start;align-items: center">
+            {% for itemarray in justOffer[2] %}
             <sub>{{ (itemarray|parseOffer)[0] }} x</sub><img src="{{ url_for('static', filename='items/' + ((itemarray|parseOffer)[1]) + '.png') }}">
-          {% endfor %}
+            {% endfor %}
+            <span style="margin-left:5px;margin-right:5px;">for</span>
+            {% for itemarray in justOffer[1] %}
+              <sub>{{ (itemarray|parseOffer)[0] }} x</sub><img src="{{ url_for('static', filename='items/' + ((itemarray|parseOffer)[1]) + '.png') }}">
+            {% endfor %}
+            <span style="margin-left: auto;"><a href="/offer/{{ justOffer[0] }}">View</a></span>
+          </div>
         </li>
         {% endfor %}
       {% endif %}

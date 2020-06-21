@@ -134,6 +134,13 @@ def postOffer():
 def withdraw(itemID):
         src.withdraw(itemID, session["UID"])
 
+@app.route("/offeraction", methods=["POST"])
+def offerAction():
+    if request.form['submit_button'] == 'accept':
+        flash(src.acceptOffer(request.form['offerID'], session["UID"]))
+    if request.form['submit_button'] == 'delete':
+        flash(src.deleteOffer(request.form['offerID'], session["UID"]))
+    return redirect(url_for("home"))
 
 #CUSTOM FILTERS:
 app.jinja_env.filters['getIGN'] = src.getIGN

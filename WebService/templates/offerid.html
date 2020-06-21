@@ -29,9 +29,15 @@
           <hr>
           {% if "UID" in session %}
             {% if session["UID"] == id|getOfferOwnerId %}
-              <button type="button" class="btn btn-danger" style="width:100%;">Delete Offer</button>
+            <form action="/offeraction" method="POST">
+              <input id="offerID" name="offerID" type="hidden" value="{{ id }}">
+              <button type="submit" class="btn btn-danger" style="width:100%;" name="submit_button" value="delete">Delete Offer</button>
+            </form>
             {% else %}
-              <button type="button" class="btn btn-primary">Accept Offer</button>
+              <form action="/offeraction" method="POST">
+                <input id="offerID" name="offerID" type="hidden" value="{{ id }}">
+                <button type="submit" class="btn btn-primary" style="width:100%;" name="submit_button" value="accept">Accept Offer</button>
+              </form>
             {% endif %}
           {% endif %}
 

@@ -13,7 +13,7 @@ conn = engine.connect()
 
 #Function to list items in database
 def listTheOffers():
-    s = DBManager.offers.select()
+    s = DBManager.offers.select().where(DBManager.offers.c.fulfilled == False)
     result = conn.execute(s)
     return result
 
@@ -77,7 +77,6 @@ def invSearch(str, UID):
 def searchOffers(itemId):
     s = DBManager.offer_data.select()
     result = conn.execute(s).fetchall()
-    print(result)
     for item in result:
         itemisthere = False
         seekingObj = item[1]
@@ -86,7 +85,6 @@ def searchOffers(itemId):
                 itemisthere = True
         if itemisthere == False:
             result.remove(item)
-    print(result)
     return result
 
 #get the name of an item from the GameID number
@@ -104,7 +102,7 @@ def getItemImage(id):
 
 #returns an object containing the active offers from a given UID
 def getActiveOffers(id):
-    s = DBManager.offers.select().where(DBManager.offers.c.owner == id)
+    s = DBManager.offers.select().where(and_(DBManager.offers.c.owner == id, DBManager.offers.c.fulfilled == False))
     result = conn.execute(s).fetchall()
     ids = []
     for item in result:
@@ -173,7 +171,6 @@ def createOffer(UID, seeking, providing):
     result = conn.execute(s)
     s = DBManager.offer_data.insert().values(id = result.inserted_primary_key[0], seeking = seeking, providing = providing)
     result = conn.execute(s)
-    print(providing)
     return "Success"
 
 def getItemID(str):
@@ -212,3 +209,102 @@ def getOfferOwnerId(offerId):
     s = DBManager.offers.select().where(DBManager.offers.c.id == offerId)
     result = conn.execute(s).fetchone()
     return result[1]
+
+def acceptOffer(id, UID):
+
+    s = DBManager.offers.select().where(DBManager.offers.c.id == id)
+    result = conn.execute(s).fetchone()
+    if len(result) == 0:
+        return "This offer no longer exists."
+    if result[4] == True:
+        return "Offer has already been claimed by another user. Sorry!"
+
+    #Generate a list of items required to fulfill the offer
+    s = DBManager.offer_data.select().where(DBManager.offer_data.c.id == id)
+    result = conn.execute(s).fetchone()
+    neededItems = []
+    for itemQuantityArray in result[1]:
+        parseOfferObj = parseOffer(itemQuantityArray)
+        i = parseOfferObj[0]
+        x=0
+        while x < int(i):
+            neededItems.append(parseOfferObj[1])
+            x+=1
+    print("neededitems1:")
+    print(neededItems)
+
+    #Generate a list of items in the inventory of the user trying to fulfill the offer
+    s = DBManager.items.select().where(DBManager.items.c.owner == UID)
+    result = conn.execute(s).fetchall()
+    userHas = []
+    for item in result:
+        userHas.append(item[2])
+
+    #Compare the two, removing items once they're checked to account for reapeating items
+    approved = False
+    neededItemsDupe = []
+    for item in neededItems:
+        neededItemsDupe.append(item)
+    for item in neededItemsDupe:
+        isFound = False
+        for item2 in userHas:
+            if item2 == item:
+                userHas.remove(item2)
+                neededItemsDupe.remove(item2)
+                isFound = True
+        if isFound == False:
+            return "" + getItemName(item) + " not found in your inventory. Transaction failed."
+        else:
+            approved = True
+
+    #If all goes well, reassign owners of required items.
+    if approved == True:
+        offerOwner = getOfferOwnerId(id)
+        #Take needed items from acceptor and reassign ownership:
+        print("Trade approved")
+        print(neededItems)
+        for item in neededItems:
+            s = DBManager.items.select().where(and_(DBManager.items.c.owner == UID, DBManager.items.c.gameId == item))
+            result = conn.execute(s).fetchone()
+            rowID = result[0]
+            s = DBManager.items.update().where(DBManager.items.c.id == rowID).values(owner = offerOwner)
+            conn.execute(s)
+
+        #Take needed items from offer poster and reassign ownership
+        providingItems = []
+        s = DBManager.offer_data.select().where(DBManager.offer_data.c.id == id)
+        result = conn.execute(s).fetchone()
+        for itemQuantityArray in result[2]:
+            parseOfferObj = parseOffer(itemQuantityArray)
+            i = parseOfferObj[0]
+            x=0
+            while x < int(i):
+                providingItems.append(parseOfferObj[1])
+                x+=1
+        for item in providingItems:
+            s = DBManager.items.select().where(and_(DBManager.items.c.owner == offerOwner, DBManager.items.c.gameId == item))
+            result = conn.execute(s).fetchone()
+            rowID = result[0]
+            s = DBManager.items.update().where(DBManager.items.c.id == rowID).values(owner = UID)
+            conn.execute(s)
+
+        #Set as fulfilled
+        s = DBManager.offers.update().where(DBManager.offers.c.id == id).values(fulfilled = True, fulfilledBy = UID, fulfilledDate = datetime.now())
+        conn.execute(s)
+        return "Transaction Complete."
+    else:
+        return "Error"
+
+def deleteOffer(id, UID):
+    s = DBManager.offers.select().where(DBManager.offers.c.id == id)
+    result = conn.execute(s).fetchone()
+    owner = result[1]
+    rowID = result[0]
+    if UID == owner:
+        s = DBManager.offers.delete().where(DBManager.offers.c.id == rowID)
+        conn.execute(s)
+        s = DBManager.offer_data.delete().where(DBManager.offer_data.c.id == rowID)
+        conn.execute(s)
+        return "Offer deleted."
+    else:
+        print("Not correct owner on deletion")
