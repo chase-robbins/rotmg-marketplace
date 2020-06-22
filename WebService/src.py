@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import func
 
 #Connect to Database
-engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
+engine = create_engine('postgresql://QOVERY_DATABASE_MY_DB_USERNAME:QOVERY_DATABASE_MY_DB_PASSWORD@QOVERY_DATABASE_MY_DB_HOST/QOVERY_DATABASE_MY_DB_NAME')
 conn = engine.connect()
 
 #Function to list items in database
