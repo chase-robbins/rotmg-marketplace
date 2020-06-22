@@ -122,6 +122,24 @@ depositedItems = Table(
     Column('items', ARRAY(Integer, dimensions=2)),
     Column('id', Integer, primary_key = True),
 )
+
+servers = Table(
+    'servers', meta,
+    Column('id', Integer, primary_key = True),
+    Column('ip', String),
+    Column('name', String)
+)
+
+proxys = Table(
+    'proxys', meta,
+    Column('id', Integer, primary_key = True),
+    Column('ip', String),
+    Column('port', Integer),
+    Column('username', String),
+    Column('password', String),
+    Column('dateAdded', String),
+    Column('expired', String)
+)
 #Table has been created. Will leave code above for reference. Note sure what the correct standards are for handling database itililization code.
 meta.create_all(engine)
 

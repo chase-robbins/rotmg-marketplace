@@ -181,17 +181,20 @@ def createOffer(UID, seeking, providing):
     result = conn.execute(s)
     return "Success"
 
+#gets the id of an item from it's Name
 def getItemID(str):
     s = DBManager.itemIds.select().where(DBManager.itemIds.c.Name == str)
     result = conn.execute(s)
     return result.fetchone()[0]
 
+#parses a string of quantityxname and returns an array [quantity, name]
 def parseOffer(str):
     arr = []
     arr.append(str.split('x',1)[0])
     arr.append(str.split('x',1)[1])
     return arr
 
+#returns an multidimensional array of offers from the ID of the offer
 def getOfferData(offerId):
     buying = []
     selling = []
@@ -205,6 +208,7 @@ def getOfferData(offerId):
     finalObject.append(selling)
     return finalObject
 
+#returns the owner String name from the id of an offer
 def getOfferOwner(offerId):
     s = DBManager.offers.select().where(DBManager.offers.c.id == offerId)
     result = conn.execute(s).fetchone()
@@ -213,11 +217,13 @@ def getOfferOwner(offerId):
     result = conn.execute(s).fetchone()
     return result[1]
 
+#returns the account id that owns an offer from the offer id
 def getOfferOwnerId(offerId):
     s = DBManager.offers.select().where(DBManager.offers.c.id == offerId)
     result = conn.execute(s).fetchone()
     return result[1]
 
+#accepting offer logic and moving items from account to account
 def acceptOffer(id, UID):
 
     s = DBManager.offers.select().where(DBManager.offers.c.id == id)
@@ -303,6 +309,7 @@ def acceptOffer(id, UID):
     else:
         return "Error"
 
+#checks if a player can delete an offer and if so deletes it from the UID and offer id
 def deleteOffer(id, UID):
     s = DBManager.offers.select().where(DBManager.offers.c.id == id)
     result = conn.execute(s).fetchone()
@@ -314,10 +321,13 @@ def deleteOffer(id, UID):
         providing = result[2]
         for item in providing:
             q = parseOffer(item)[0]
+            print(q)
             i = parseOffer(item)[1]
+            print(i)
             x = 0
-            while x < q:
-                s = DBManager.items.update().where(and_(DBManager.items.c.owner == UID, DBManager.items.c.gameId == i)).values()
+            while x < int(q):
+                s = DBManager.items.update().where(and_(DBManager.items.c.owner == UID, DBManager.items.c.gameId == i)).values(inOffer = False)
+                x+=1;
 
         s = DBManager.offers.delete().where(DBManager.offers.c.id == rowID)
         conn.execute(s)

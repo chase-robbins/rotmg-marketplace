@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, request, session, flash, jsonify
+from flask import Flask, redirect, url_for, render_template, request, session, flash, jsonify, Response
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
 import src
@@ -130,9 +130,17 @@ def postOffer():
         id = session['UID']
         return jsonify({'message': src.createOffer(id, buying, selling)})
 
-@app.route("/withdraw", methods=['POST'])
-def withdraw(itemID):
-        src.withdraw(itemID, session["UID"])
+@app.route("/withdraw", methods=['GET','POST'])
+def withdraw():
+    if "UID" in session:
+        list = src.listItemsFromUID(session["UID"])
+        itemIds = src.getAllItems()
+        return render_template("withdraw.html",  items = list, itemIds = itemIds)
+
+@app.route("/withdrawstream", methods=['GET'])
+def withdrawstream():
+    text = jsonify(text = 'test')
+    return Response(text, mimetype='text/event-stream')
 
 @app.route("/offeraction", methods=["POST"])
 def offerAction():
@@ -157,4 +165,4 @@ app.jinja_env.filters['getOfferOwnerId'] = src.getOfferOwnerId
 
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(debug = False)
