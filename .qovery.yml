@@ -1,6 +1,6 @@
 application:
-  name: Realm-Exchange
-  project: Realm-Exchange
+  name: Realm-Exchange-Webapp
+  project: Realm-Exchange-Webapp
   publicly_accessible: true
   cloud_region: aws/us-west-2
 databases:
@@ -10,6 +10,6 @@ databases:
 routers:
 - name: main
   routes:
-  - application_name: Realm-Exchange
+  - application_name: Realm-Exchange-Webapp
     paths:
     - /*
