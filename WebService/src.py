@@ -166,6 +166,14 @@ def createOffer(UID, seeking, providing):
         result = conn.execute(s).fetchall()
         if quantity > len(result):
             return "You do not have the items you have attempted to sell."
+        else:
+            s = DBManager.items.update().where(
+                and_(
+                    DBManager.items.c.owner == UID,
+                    DBManager.items.c.gameId == itemId,
+                    DBManager.items.c.inOffer == 0
+                )
+            ).values(inOffer = 1)
     end_date = datetime.now() + timedelta(days=1)
     s = DBManager.offers.insert().values(owner = UID, created = datetime.now(), expiring = end_date, fulfilled = False, fulfilledBy = None, fulfilledDate = None)
     result = conn.execute(s)
@@ -301,10 +309,21 @@ def deleteOffer(id, UID):
     owner = result[1]
     rowID = result[0]
     if UID == owner:
+        s = DBManager.offer_data.select().where(DBManager.offer_data.c.id == rowID)
+        result = conn.execute(s).fetchone()
+        providing = result[2]
+        for item in providing:
+            q = parseOffer(item)[0]
+            i = parseOffer(item)[1]
+            x = 0
+            while x < q:
+                s = DBManager.items.update().where(and_(DBManager.items.c.owner == UID, DBManager.items.c.gameId == i)).values()
+
         s = DBManager.offers.delete().where(DBManager.offers.c.id == rowID)
         conn.execute(s)
         s = DBManager.offer_data.delete().where(DBManager.offer_data.c.id == rowID)
         conn.execute(s)
+
         return "Offer deleted."
     else:
         print("Not correct owner on deletion")
