@@ -2,7 +2,7 @@ import psycopg2
 from sqlalchemy import create_engine
 
 #create engine for SQLAlchemy ORM
-engine = create_engine('postgresql://super:re123123@chaserobbins123-1694.postgres.pythonanywhere-services.com:11694/postgres')
+engine = create_engine('postgresql://postgres:testingPassword@localhost:5432/postgres')
 
 
 #Setting credentials and creating a connect object to the database.
