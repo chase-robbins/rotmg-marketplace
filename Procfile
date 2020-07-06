@@ -1,2 +1,2 @@
-web: python ./WebService/DBManager.py; gunicorn /WebService/app.py:app
+web: /WebService/app.py
 heroku ps:scale web=1
