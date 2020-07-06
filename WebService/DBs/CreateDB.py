@@ -1,8 +1,10 @@
 import psycopg2
 from sqlalchemy import create_engine
+import env
+
 
 #create engine for SQLAlchemy ORM
-engine = create_engine('postgresql://postgres:testingPassword@localhost:5432/postgres')
+engine = create_engine('postgresql://'+env.db_user+':'+env.db_pass+'@'+env.db_url+':'+env.db_port+'/'+env.db_name)\
 
 
 #Setting credentials and creating a connect object to the database.
