@@ -1,1 +1,1 @@
-web: python /WebService/app.py
+web python /WebService/app.py
