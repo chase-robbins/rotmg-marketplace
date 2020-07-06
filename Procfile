@@ -1,1 +1,1 @@
-webapp: python3 ./WebService/DBManager.py; ./WebService/python3 app.py
+web: python3 ./WebService/DBManager.py; ./WebService/python3 app.py
