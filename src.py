@@ -6,9 +6,11 @@ import pwSalting
 from flask import flash
 from datetime import datetime, timedelta
 from sqlalchemy import func
+import env
 
 #Connect to Database
-engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
+engine = create_engine('postgresql://'+env.db_user+':'+env.db_pass+'@'+env.db_url+':'+env.db_port+'/'+env.db_name)\
+
 conn = engine.connect()
 
 #Function to list items in database

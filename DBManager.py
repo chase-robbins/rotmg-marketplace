@@ -2,12 +2,16 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, 
 from sqlalchemy.orm import relationship, Session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import ARRAY
+import env
 
 Base = declarative_base()
 meta = MetaData()
 
+print("env==>>>" + env.db_user)
+
 #create engine for SQLAlchemy ORM
-engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
+engine = create_engine('postgresql://'+env.db_user+':'+env.db_pass+'@'+env.db_url+':'+env.db_port+'/'+env.db_name)\
+
 
 session = Session(bind=engine)
 

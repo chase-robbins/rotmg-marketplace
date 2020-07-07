@@ -6,9 +6,11 @@ import os.path
 from os import path
 import DBManager
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
+import env
 
 
-engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
+engine = create_engine('postgresql://'+env.db_user+':'+env.db_pass+'@'+env.db_url+':'+env.db_port+'/'+env.db_name)\
+
 conn = engine.connect()
 
 def iterate():

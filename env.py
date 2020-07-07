@@ -1,0 +1,11 @@
+# db_url = "localhost"
+# db_pass = "testingPassword"
+# db_user = "postgres"
+# db_name = "postgres"
+# db_port = "5432"
+
+db_url = "ec2-54-146-4-66.compute-1.amazonaws.com"
+db_pass = "bd576b2dc3ce1f858a00d91c8ba6445b0b4b345b32d7a7f969d7e70dfa820517"
+db_user = "igxciwckzonsqm"
+db_name = "dbtnm6c9kmc65v"
+db_port = "5432"

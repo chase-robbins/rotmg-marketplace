@@ -5,9 +5,12 @@ from sqlalchemy.sql import exists
 from sqlalchemy.orm import sessionmaker
 import pwSalting
 import random
+import env
+
 
 #Connect to DB (next 2)
-engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
+engine = create_engine('postgresql://'+env.db_user+':'+env.db_pass+'@'+env.db_url+':'+env.db_port+'/'+env.db_name)\
+
 conn = engine.connect()
 Session = sessionmaker(bind=engine)
 session = Session()

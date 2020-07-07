@@ -1,8 +1,10 @@
 from sqlalchemy import select, create_engine, MetaData, Table, Column, Integer, String
+import env
 
 
 #Connect to DB (next 2)
-engine = create_engine('postgresql://postgres:testingPassword@localhost/postgres')
+engine = create_engine('postgresql://'+env.db_user+':'+env.db_pass+'@'+env.db_url+':'+env.db_port+'/'+env.db_name)\
+
 conn = engine.connect()
 
 #Method to list all items in item Table in DB
