@@ -7,6 +7,8 @@ import env
 Base = declarative_base()
 meta = MetaData()
 
+print("env==>>>" + env.db_user)
+
 #create engine for SQLAlchemy ORM
 engine = create_engine('postgresql://'+env.db_user+':'+env.db_pass+'@'+env.db_url+':'+env.db_port+'/'+env.db_name)\
 
