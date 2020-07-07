@@ -1,0 +1,3 @@
+import DBManager
+
+DBManager.DropAll()
