@@ -16,10 +16,6 @@ Session = sessionmaker(bind=engine)
 session = Session()
 #Pass in arguments in order: In Game Name, Email, Password, DB Object of Users
 def main(ign, email, password, users):
-    print("Attempting to create account:")
-    print("ign: " + ign)
-    print("email: " + email)
-    print("password: " + password)
     verificationString = str(random.randint(1000,9999))
     #Check Email Not Used Before First
     if session.query(users).filter_by(email=email).count() > 0:

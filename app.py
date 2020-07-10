@@ -3,55 +3,23 @@ from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
 import src
 from jinja2 import Environment, PackageLoader, select_autoescape
-from logging.config import dictConfig
-
-
-
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'stream': 'ext://sys.stdout',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'INFO',
-        'handlers': ['wsgi']
-    }
-})
 
 app = Flask(__name__)
-app.secret_key = "978u3h4tg897hgbu4rh49p83gf7hq9p34hgq93p4u"
+app.secret_key = "iropjhgortijgosdijgoje1233123oi1j23oj12oij3o12j54oj13o25j"
 app.permanent_session_lifetime = timedelta(days=5)
 
 db = SQLAlchemy(app)
 
 @app.route("/", methods=["POST", "GET"])
 def home():
-    if request.method == "POST":
-        search = request.form["item"]
-        if search != "":
-            searchID = src.getItemID(search)
-            offersReturn = src.searchOffers(searchID)
-        if "UID" in session:
-            itemIds = src.getAllItems()
-            list = src.listItemsFromUID(session["UID"]).fetchall()
-            if search == "":
-                offersReturn = src.listTheOffers()
-            return render_template("home.html", offers = offersReturn, items = list, invUsed = len(list), itemIds = itemIds, capacity = src.getCapacity(session["UID"]))
-        else:
-            return render_template("home.html", offers = offersReturn)
-    else:
+    if "UID" in session:
+        itemIds = src.getAllItems()
+        list = src.listItemsFromUID(session["UID"]).fetchall()
+        activeOffers = src.getActiveOffers(session["UID"])
         offersReturn = src.listTheOffers()
-        if "UID" in session:
-            itemIds = src.getAllItems()
-            list = src.listItemsFromUID(session["UID"]).fetchall()
-            return render_template("home.html", offers = offersReturn, items = list, invUsed = len(list), itemIds = itemIds, capacity = src.getCapacity(session["UID"]))
-        else:
-            return render_template("home.html", offers = offersReturn)
+        return render_template("home.html", activeOffers = activeOffers, offers = offersReturn, items = list, invUsed = len(list), itemIds = itemIds, capacity = src.getCapacity(session["UID"]))
+    else:
+        return render_template("home.html", offers = offersReturn)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -168,6 +136,16 @@ def offerAction():
     if request.form['submit_button'] == 'delete':
         flash(src.deleteOffer(request.form['offerID'], session["UID"]))
     return redirect(url_for("home"))
+
+
+@app.route("/profile/<id>", methods=["GET"])
+def profileId(id):
+    if(src.profileIsPublic(id)):
+        activeOffers = src.getActiveOffers(id)
+        ign = src.getIGN(session["UID"])
+        list = src.getItemsForInventory(session["UID"])
+        return render_template("otherUser.html", items = list, ign = ign, activeOffers = activeOffers, invUsed = src.getInvUsed(session["UID"]), capacity = src.getCapacity(session["UID"]))
+
 
 #CUSTOM FILTERS:
 app.jinja_env.filters['getIGN'] = src.getIGN

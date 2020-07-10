@@ -62,6 +62,8 @@ users = Table(
     Column('verificationString', String),
     Column('verified', Boolean, default = False),
     Column('tier', Integer),
+    Column('privacy', Integer)
+
 )
 
 offers = Table(

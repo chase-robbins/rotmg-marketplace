@@ -339,3 +339,10 @@ def deleteOffer(id, UID):
         return "Offer deleted."
     else:
         print("Not correct owner on deletion")
+
+def profileIsPublic(id):
+    s = DBManager.users.select().where(DBManager.users.c.id == id)
+    result = conn.execute(s).fetchone()
+    if result[10] == 1:
+        return True
+    return False

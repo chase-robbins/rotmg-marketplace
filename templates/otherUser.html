@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Browse Content{% endblock %}
+{% block content %}
+<style>
+  .item{
+    border-radius: 5px;
+    height: 45px;
+    width: 45px;
+    padding:3px;
+    background-color:#8080801c;
+  }
+  </style>
+<div class="container">
+  <div class="row">
+    <div class="col"><h1>{{ ign }}</h1></div>
+    <div class="col"></div>
+    <div class="col"></div>
+    <div class="col"><p><a href=""><sub>Change Password</sub></a></p></div>
+  </div>
+  <div class="row">
+    <div class="col"></div>
+    <div class="col"></div>
+    <div class="col"></div>
+    <div class="col"></div>
+  </div>
+  <div class="row">
+
+  </div>
+  <div class="row">
+    <div class="col">
+      <h4>Your Inventory ({{ invUsed }}/{{ capacity }})</h4>
+      <div class="row" style="margin-right:15px;margin-left:0;">
+        <ul class="list-group" style="width:100%;">
+          {% for item in items %}
+            <li class="list-group-item"><img src="{{ url_for('static', filename='items/' + item[0]|str + '.png') }}"> {{ item[0]|getItemName }}
+              {% if item[1] > 1 %}
+                <sub>x {{ item[1] }}</sub></li>
+              {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="col col-lg-4">
+      <div class="invButtons"><a href="/offer"><button type="button" class="btn btn-secondary">Create Offer</button></a> <button type="button" class="btn btn-secondary">Withdraw Items</button>
+      <button type="button" class="btn btn-info">Make Profile Public</button></div>
+      <hr>
+      <h4>Active Offers</h4>
+      <h6>Offer Capacity: {{ activeOffers|len }}/{{ capacity }}</h6>
+      {% if activeOffers is none %}
+        <p>None</p>
+      {% else %}
+        {% for justOffer in activeOffers %}
+        <li class="list-group-item">
+          <div style="display:flex;flex-direction:row;justify-content:flex-start;align-items: center">
+            {% for itemarray in justOffer[2] %}
+            <sub>{{ (itemarray|parseOffer)[0] }} x</sub><img src="{{ url_for('static', filename='items/' + ((itemarray|parseOffer)[1]) + '.png') }}">
+            {% endfor %}
+            <span style="margin-left:5px;margin-right:5px;">for</span>
+            {% for itemarray in justOffer[1] %}
+              <sub>{{ (itemarray|parseOffer)[0] }} x</sub><img src="{{ url_for('static', filename='items/' + ((itemarray|parseOffer)[1]) + '.png') }}">
+            {% endfor %}
+            <span style="margin-left: auto;"><a href="/offer/{{ justOffer[0] }}">View</a></span>
+          </div>
+        </li>
+        {% endfor %}
+      {% endif %}
+      <hr>
+      <h4>Trade History</h4>
+      <ul class="list-group">
+
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
